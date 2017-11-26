@@ -1,0 +1,11 @@
+<resources>
+
+    <color name="top_bar_background">#bc130e</color>
+    <color name="splash_text">#bc130e</color>
+    <color name="splash_background">#FFFFFF</color>
+    <color name="main_background">#FFFFFF</color>
+
+    <color name="nav_drawer_background">#FFFFFF</color>
+    <color name="nav_drawer_top_background">#CCCCCC</color>
+    <color name="nav_drawer_no_user_background">#AAAAAA</color>
+</resources>
