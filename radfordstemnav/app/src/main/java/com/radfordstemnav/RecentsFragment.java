@@ -1,9 +1,6 @@
 package com.radfordstemnav;
 
-import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.Context;
-import android.graphics.Path;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -19,15 +16,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-import com.amazonaws.models.nosql.LocationsDO;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.amazonaws.models.nosql.RecentsFavoritesDO;
 import com.amazonaws.regions.Regions;
-import com.amazonaws.services.dynamodbv2.*;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 
 import java.util.ArrayList;
 import java.util.List;

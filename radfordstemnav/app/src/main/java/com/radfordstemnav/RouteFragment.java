@@ -79,14 +79,12 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         private static final String ARG_PARAM1 = "selection";
         private String mParam1;
         private GoogleMap mMap;
-        public HashMap<String, LatLng> campus_locations = new HashMap<>();
         GoogleApiClient mGoogleApiClient;
         Location mLastLocation;
         Marker mCurrLocationMarker;
         LocationRequest mLocationRequest;
         LatLng dest;
         
-        private OnFragmentInteractionListener routeListener;
 
         public RouteFragment() {
             // Required empty public constructor

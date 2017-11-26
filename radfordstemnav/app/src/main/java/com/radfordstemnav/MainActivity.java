@@ -239,12 +239,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Application.setContext(this);
         setupNavigationMenu(savedInstanceState);
         setFragment(new HomeFragment(), this);
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        //callbackManager = CallbackManager.Factory.create();
         FragmentManager fm = getSupportFragmentManager();
         for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
             fm.popBackStack();
         }
+        checkLocationPermission();
     }
     public void setFragment(Fragment fragment, Context context) {
         FragmentManager fragmentManager = getSupportFragmentManager();
