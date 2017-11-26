@@ -40,6 +40,8 @@ import com.amazonaws.mobile.auth.core.IdentityManager;
 import com.amazonaws.mobile.auth.core.IdentityProvider;
 import com.amazonaws.mobile.auth.ui.SignInActivity;
 import com.amazonaws.regions.Regions;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
 import com.radfordstemnav.dummy.DummyContent;
 import com.radfordstemnav.navigation.NavigationDrawer;
 
@@ -237,7 +239,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Application.setContext(this);
         setupNavigationMenu(savedInstanceState);
         setFragment(new HomeFragment(), this);
-
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        //callbackManager = CallbackManager.Factory.create();
         FragmentManager fm = getSupportFragmentManager();
         for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
             fm.popBackStack();

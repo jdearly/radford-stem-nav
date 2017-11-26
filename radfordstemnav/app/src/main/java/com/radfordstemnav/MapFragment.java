@@ -279,8 +279,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         // Place user's current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         // Generates a new route as the user moves
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(latLng);
-        mapMap.animateCamera(cameraUpdate);
+        //CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(latLng);
+        //mapMap.animateCamera(cameraUpdate);
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }

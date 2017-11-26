@@ -23,11 +23,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import com.amazonaws.auth.AWSAbstractCognitoDeveloperIdentityProvider;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedQueryList;
 import com.amazonaws.models.nosql.LocationsDO;
+import com.amazonaws.models.nosql.RecentsFavoritesDO;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.google.android.gms.common.ConnectionResult;
@@ -523,6 +525,7 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
 
         }
     }
+
         private class database extends AsyncTask<LatLng, LatLng, LatLng> {
             @Override
             protected LatLng doInBackground(LatLng... params) {
@@ -533,23 +536,42 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
                         Regions.US_EAST_1           /* Region for your identity pool--US_EAST_1 or EU_WEST_1*/
                 );
                 AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentialsProvider);
+                //AmazonDynamoDBClient recentClient = new AmazonDynamoDBClient(credentialsProvider);
                 DynamoDBMapper mapper = new DynamoDBMapper(ddbClient);
+                //DynamoDBMapper recentMapper = new DynamoDBMapper(recentClient);
                 LocationsDO destination = new LocationsDO();
+                RecentsFavoritesDO recentLocation = new RecentsFavoritesDO();
                 destination.setCategory("test");
                 destination.setName(mParam1);
+
+                recentLocation.setCategory("recents");
+                recentLocation.setUserId(credentialsProvider.getIdentityId());
+                recentLocation.setName(mParam1);
                 System.out.println("NAME: " + mParam1);
 
                 DynamoDBQueryExpression<LocationsDO> queryExpr = new DynamoDBQueryExpression<LocationsDO>()
                         .withHashKeyValues(destination);
+                DynamoDBQueryExpression<RecentsFavoritesDO> recentQueryExpr = new DynamoDBQueryExpression<RecentsFavoritesDO>()
+                        .withHashKeyValues(recentLocation);
                 PaginatedQueryList<LocationsDO> latlng = mapper.query(LocationsDO.class, queryExpr);
+                PaginatedQueryList<RecentsFavoritesDO> recentLoc = mapper.query(RecentsFavoritesDO.class, recentQueryExpr);
+                System.out.println("SIZE OF RECENTLOC: "+ recentLoc.size());
 
                 for (int i = 0; i < latlng.size(); i++) {
                     if (latlng.get(i).getName().equals(mParam1)) {
                         Double lat = latlng.get(i).getLatitude();
                         Double lng = latlng.get(i).getLongitude();
                         dest = new LatLng(lat, lng);
+
+                                recentLocation.setUserId(credentialsProvider.getIdentityId());
+                                recentLocation.setCategory("recents");
+                                recentLocation.setLatitude(lat);
+                                recentLocation.setLongitude(lng);
+                                recentLocation.setName(mParam1);
+                                mapper.save(recentLocation);
+
+                        }
                     }
-                }
                 return dest;
             }
             @Override
