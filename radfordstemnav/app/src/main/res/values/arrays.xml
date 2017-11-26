@@ -3,9 +3,9 @@
     <string-array name="list_array">
     <item>HOME</item>
         <item>CAMPUS MAP</item>
-        <item>RECENT PLACES</item>
-        <item>POPULAR PLACES</item>
-        <item>EVENTS</item>
+        <item>RECENT</item>
+        <item>POPULAR</item>
+        <item>FAVORITES</item>
         <item>STEM SOCIAL MEDIA</item>
     </string-array>
 </resources>

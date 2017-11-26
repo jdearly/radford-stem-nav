@@ -1,9 +1,6 @@
 package com.radfordstemnav;
 
-import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.Context;
-import android.graphics.Path;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -19,11 +16,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.models.nosql.LocationsDO;
+import com.amazonaws.models.nosql.RecentsFavoritesDO;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.*;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
@@ -169,6 +166,7 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
                 return true;
 
             case R.id.save:
+                new favDB().execute(key);
                 Toast.makeText(getActivity(), "Location saved", Toast.LENGTH_LONG).show();
                 return true;
 
@@ -249,5 +247,47 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
         protected void onPostExecute(ArrayList params){
         }
     }
+
+
+private class favDB extends AsyncTask<String, String, String> {
+
+    @Override
+    protected String doInBackground(String... strings) {
+        String location = strings[0];
+        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                context,    /* get the context for the application */
+                "us-east-1:843f215d-5abf-42e6-96a0-b64dd0b333b0",    /* Identity Pool ID */
+                Regions.US_EAST_1           /* Region for your identity pool--US_EAST_1 or EU_WEST_1*/
+        );
+        AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentialsProvider);
+        DynamoDBMapper mapper = new DynamoDBMapper(ddbClient);
+        LocationsDO locations = new LocationsDO();
+        RecentsFavoritesDO favorite = new RecentsFavoritesDO();
+        locations.setCategory("test");
+        locations.setName(location);
+
+        DynamoDBQueryExpression<LocationsDO> favQueryExpr = new DynamoDBQueryExpression<LocationsDO>()
+                .withHashKeyValues(locations);
+        PaginatedQueryList<LocationsDO> latlng = mapper.query(LocationsDO.class, favQueryExpr);
+
+        for (int i = 0; i < latlng.size(); i++) {
+            if (latlng.get(i).getName().equals(location)) {
+                Double lat = latlng.get(i).getLatitude();
+                Double lng = latlng.get(i).getLongitude();
+
+                favorite.setUserId(credentialsProvider.getIdentityId());
+                favorite.setCategory("favorites");
+                favorite.setLatitude(lat);
+                favorite.setLongitude(lng);
+                favorite.setName(location);
+                mapper.save(favorite);
+
+            }
+
+        }
+        return null;
+    }
 }
+}
+
 

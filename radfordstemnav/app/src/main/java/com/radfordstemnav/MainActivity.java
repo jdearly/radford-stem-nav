@@ -164,7 +164,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void selectItem(int position) {
         // Create a new fragment and specify the planet to show based on position
         if (position == 0) {
-            Toast.makeText(this, "Load HOME page", Toast.LENGTH_LONG).show();
             navigationDrawer.closeDrawer();
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
@@ -173,7 +172,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .commit();
         }
         if (position == 1) {
-            Toast.makeText(this, "Load CAMPUS MAP page", Toast.LENGTH_LONG).show();
             navigationDrawer.closeDrawer();
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
@@ -182,7 +180,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .commit();
         }
         if (position == 2) {
-            Toast.makeText(this, "Load RECENT PLACES page", Toast.LENGTH_LONG).show();
             navigationDrawer.closeDrawer();
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
@@ -191,7 +188,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .commit();
         }
         if (position == 3) {
-            Toast.makeText(this, "Load POPULAR PLACES page", Toast.LENGTH_LONG).show();
             navigationDrawer.closeDrawer();
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
@@ -200,15 +196,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .commit();
         }
         if (position == 4) {
-            Toast.makeText(this, "Load EVENTS page", Toast.LENGTH_LONG).show();
             navigationDrawer.closeDrawer();
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.main_fragment_container, new EventFragment())
+                    .replace(R.id.main_fragment_container, new FavoritesFragment())
+                    .addToBackStack("")
                     .commit();
         }
         if (position == 5) {
-            Toast.makeText(this, "Load STEM SOCIAL MEDIA page", Toast.LENGTH_LONG).show();
             navigationDrawer.closeDrawer();
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()

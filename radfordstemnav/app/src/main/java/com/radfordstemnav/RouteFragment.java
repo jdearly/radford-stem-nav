@@ -195,7 +195,7 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
                 buildGoogleApiClient();
                 mMap.setMyLocationEnabled(true);
             } else {
-                checkLocationPermission();
+                //checkLocationPermission();
             }
         } else {
             buildGoogleApiClient();

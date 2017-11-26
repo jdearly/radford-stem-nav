@@ -233,8 +233,10 @@ public class RecentsFragment extends Fragment implements RouteFragment.OnFragmen
 
             for (int i = 0; i < location_list.size(); i++)
             {
-                menu.add(location_list.get(i).getName());
-                System.out.println("ITEM ID: " + menu);
+                if (location_list.get(i).getCategory().equals("recents")) {
+                    menu.add(location_list.get(i).getName());
+                    System.out.println("ITEM ID: " + menu);
+                }
             }
             menu_items = menu;
             return menu;
