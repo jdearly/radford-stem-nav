@@ -26,6 +26,7 @@ public class RecentsFavoritesDO {
     public void setUserId(final String _userId) {
         this._userId = _userId;
     }
+
     @DynamoDBRangeKey(attributeName = "name")
     @DynamoDBAttribute(attributeName = "name")
     public String getName() {
@@ -35,6 +36,7 @@ public class RecentsFavoritesDO {
     public void setName(final String _name) {
         this._name = _name;
     }
+
     @DynamoDBAttribute(attributeName = "TTL")
     public int getTTL() {
         return _tTL;
@@ -43,6 +45,7 @@ public class RecentsFavoritesDO {
     public void setTTL(final int _tTL) {
         this._tTL = _tTL;
     }
+
     @DynamoDBIndexHashKey(attributeName = "category", globalSecondaryIndexName = "Categories")
     @DynamoDBIndexRangeKey(attributeName = "category", globalSecondaryIndexName = "user-category-index")
     public String getCategory() {
@@ -52,6 +55,7 @@ public class RecentsFavoritesDO {
     public void setCategory(final String _category) {
         this._category = _category;
     }
+
     @DynamoDBAttribute(attributeName = "latitude")
     public Double getLatitude() {
         return _latitude;
@@ -60,6 +64,7 @@ public class RecentsFavoritesDO {
     public void setLatitude(final Double _latitude) {
         this._latitude = _latitude;
     }
+
     @DynamoDBIndexRangeKey(attributeName = "longitude", globalSecondaryIndexName = "Categories")
     public Double getLongitude() {
         return _longitude;

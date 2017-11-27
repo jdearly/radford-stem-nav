@@ -3,7 +3,6 @@ package com.radfordstemnav;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -39,16 +38,13 @@ import java.util.concurrent.TimeoutException;
  * Use the {@link RecentsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RecentsFragment extends Fragment implements RouteFragment.OnFragmentInteractionListener
-{
+public class RecentsFragment extends Fragment implements RouteFragment.OnFragmentInteractionListener {
 
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     ArrayList<String> menu_items;
     ListView listView;
-
+    Context context;
     private OnFragmentInteractionListener homeListener;
 
     public RecentsFragment() {
@@ -60,15 +56,12 @@ public class RecentsFragment extends Fragment implements RouteFragment.OnFragmen
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment RecentsFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static RecentsFragment newInstance(String param1, String param2) {
+    public static RecentsFragment newInstance(String param1) {
         RecentsFragment fragment = new RecentsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -83,15 +76,12 @@ public class RecentsFragment extends Fragment implements RouteFragment.OnFragmen
                     + " must implement OnFragmentInteractionListener");
         }
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            String mParam1 = getArguments().getString(ARG_PARAM1);
-            String mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
-    Context context;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -139,7 +129,7 @@ public class RecentsFragment extends Fragment implements RouteFragment.OnFragmen
         String key = (String) listView.getItemAtPosition(info.position);
         FragmentManager fragmentManager = getFragmentManager();
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.route:
                 Bundle routeArgs = new Bundle();
                 routeArgs.putString("selection", key);
@@ -172,18 +162,6 @@ public class RecentsFragment extends Fragment implements RouteFragment.OnFragmen
         }
     }
 
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (homeListener != null) {
-            homeListener.onFragmentInteraction(uri);
-        }
-    }
-
-    public void routeHepler() {
-
-    }
-
     @Override
     public void onDetach() {
         super.onDetach();
@@ -202,10 +180,8 @@ public class RecentsFragment extends Fragment implements RouteFragment.OnFragmen
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        // required
     }
-
 
 
     private class db extends AsyncTask<ArrayList, ArrayList, ArrayList> {
@@ -229,8 +205,7 @@ public class RecentsFragment extends Fragment implements RouteFragment.OnFragmen
 
             List<RecentsFavoritesDO> location_list = mapper.query(RecentsFavoritesDO.class, queryExpression);
 
-            for (int i = 0; i < location_list.size(); i++)
-            {
+            for (int i = 0; i < location_list.size(); i++) {
                 if (location_list.get(i).getCategory().equals("recents")) {
                     menu.add(location_list.get(i).getName());
                     System.out.println("ITEM ID: " + menu);
@@ -240,11 +215,12 @@ public class RecentsFragment extends Fragment implements RouteFragment.OnFragmen
             return menu;
         }
 
+        @Override
+        protected void onPreExecute() {
+        }
 
         @Override
-        protected void onPreExecute() {}
-        @Override
-        protected void onPostExecute(ArrayList params){
+        protected void onPostExecute(ArrayList params) {
         }
     }
 }

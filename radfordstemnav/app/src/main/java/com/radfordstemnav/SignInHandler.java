@@ -13,8 +13,8 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.amazonaws.mobile.auth.core.IdentityProvider;
 import com.amazonaws.mobile.auth.core.DefaultSignInResultHandler;
+import com.amazonaws.mobile.auth.core.IdentityProvider;
 
 /**
  * Handles Re-directing to the main activity upon sign-in.
@@ -26,10 +26,10 @@ public class SignInHandler extends DefaultSignInResultHandler {
     public void onSuccess(final Activity callingActivity, final IdentityProvider provider) {
         if (provider != null) {
             Log.d(LOG_TAG, String.format("User sign-in with %s provider succeeded",
-                provider.getDisplayName()));
+                    provider.getDisplayName()));
             Toast.makeText(callingActivity, String.format(
-                callingActivity.getString(R.string.sign_in_succeeded_message_format),
-                provider.getDisplayName()), Toast.LENGTH_LONG).show();
+                    callingActivity.getString(R.string.sign_in_succeeded_message_format),
+                    provider.getDisplayName()), Toast.LENGTH_LONG).show();
         }
 
         /** Go to the main activity. */

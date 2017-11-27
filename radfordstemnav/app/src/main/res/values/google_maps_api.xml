@@ -1,25 +1,4 @@
 <resources>
-    <!--
-    TODO: Before you run your application, you need a Google Maps API key.
-
-    To get one, follow this link, follow the directions and press "Create" at the end:
-
-    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=1A:38:36:1C:CC:9A:B2:0C:ED:15:51:ED:90:EC:47:47:59:CD:80:15%3Bcom.example.digitalstorm.radfordnavigatorv2
-
-    You can also add your credentials to an existing key, using these values:
-
-    Package name:
-    1A:38:36:1C:CC:9A:B2:0C:ED:15:51:ED:90:EC:47:47:59:CD:80:15
-
-    SHA-1 certificate fingerprint:
-    1A:38:36:1C:CC:9A:B2:0C:ED:15:51:ED:90:EC:47:47:59:CD:80:15
-
-    Alternatively, follow the directions here:
-    https://developers.google.com/maps/documentation/android/start#get-key
-
-    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
-    string in this file.
-    -->
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
          AIzaSyCpaNm7AD5lyji8zBQOIsFaC_PyC_JAMuk
     </string>

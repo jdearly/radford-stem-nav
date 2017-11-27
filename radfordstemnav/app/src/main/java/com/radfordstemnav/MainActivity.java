@@ -13,12 +13,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -34,15 +35,10 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobile.auth.core.DefaultSignInResultHandler;
 import com.amazonaws.mobile.auth.core.IdentityManager;
 import com.amazonaws.mobile.auth.core.IdentityProvider;
 import com.amazonaws.mobile.auth.ui.SignInActivity;
-import com.amazonaws.regions.Regions;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookSdk;
-import com.radfordstemnav.dummy.DummyContent;
 import com.radfordstemnav.navigation.NavigationDrawer;
 
 import java.lang.ref.WeakReference;
@@ -57,30 +53,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FavoritesFragment.OnFragmentInteractionListener {
 
 
-
-    /** Class name for log messages. */
+    /**
+     * Class name for log messages.
+     */
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    /** Bundle key for saving/restoring the toolbar title. */
+    /**
+     * Bundle key for saving/restoring the toolbar title.
+     */
     private static final String BUNDLE_KEY_TOOLBAR_TITLE = "title";
-
-    /** The identity manager used to keep track of the current user account. */
+    private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    /**
+     * The identity manager used to keep track of the current user account.
+     */
     private IdentityManager identityManager;
-
-    /** The toolbar view control. */
+    /**
+     * The toolbar view control.
+     */
     private Toolbar toolbar;
-
-    /** Our navigation drawer class for handling navigation drawer logic. */
+    /**
+     * Our navigation drawer class for handling navigation drawer logic.
+     */
     private NavigationDrawer navigationDrawer;
-
-    /** The helper class used to toggle the left navigation drawer open and closed. */
+    /**
+     * The helper class used to toggle the left navigation drawer open and closed.
+     */
     private ActionBarDrawerToggle drawerToggle;
-
-    /** Data to be passed between fragments. */
+    /**
+     * Data to be passed between fragments.
+     */
     private Bundle fragmentBundle;
-
-    private Button   signOutButton;
-    private Button   signInButton;
+    private Button signOutButton;
+    private Button signInButton;
 
     /**
      * Initializes the Toolbar for use with the activity.
@@ -97,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             // Restore the Toolbar's title.
             getSupportActionBar().setTitle(
-                savedInstanceState.getCharSequence(BUNDLE_KEY_TOOLBAR_TITLE));
+                    savedInstanceState.getCharSequence(BUNDLE_KEY_TOOLBAR_TITLE));
         }
     }
 
@@ -128,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Create the navigation drawer.
         navigationDrawer = new NavigationDrawer(this, toolbar, drawerLayout, drawerItems,
-            R.id.main_fragment_container);
+                R.id.main_fragment_container);
 
         // Add navigation drawer menu items.
         // Home isn't a demo, but is fake as a demo.
@@ -147,19 +151,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
-
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
-        }
-    }
-
-    /** Swaps fragments in the main content view */
+    /**
+     * Swaps fragments in the main content view
+     */
     private void selectItem(int position) {
         // Create a new fragment and specify the planet to show based on position
         if (position == 0) {
@@ -217,8 +211,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        mTitle = title;
 //        getActionBar().setTitle(mTitle);
 //    }
-
-
+    // Checks to verify that the user has a network connecton to make the request for the route
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager)
+                this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -234,11 +233,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setupNavigationMenu(savedInstanceState);
         setFragment(new HomeFragment(), this);
         FragmentManager fm = getSupportFragmentManager();
-        for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+        for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
             fm.popBackStack();
         }
         checkLocationPermission();
+
     }
+
     public void setFragment(Fragment fragment, Context context) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -323,7 +324,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         final FragmentManager fragmentManager = this.getSupportFragmentManager();
-        
+
         if (navigationDrawer.isDrawerOpen()) {
             navigationDrawer.closeDrawer();
             return;
@@ -332,24 +333,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fragmentManager.popBackStack();
     }
 
-
-    /**
-     * Stores data to be passed between fragments.
-     * @param fragmentBundle fragment data
-     */
-    public void setFragmentBundle(final Bundle fragmentBundle) {
-        this.fragmentBundle = fragmentBundle;
-    }
-
     /**
      * Gets data to be passed between fragments.
+     *
      * @return fragmentBundle fragment data
      */
     public Bundle getFragmentBundle() {
         return this.fragmentBundle;
     }
 
-    private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    /**
+     * Stores data to be passed between fragments.
+     *
+     * @param fragmentBundle fragment data
+     */
+    public void setFragmentBundle(final Bundle fragmentBundle) {
+        this.fragmentBundle = fragmentBundle;
+    }
 
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -406,6 +406,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // Other permission requests can be added here. Such as permission to store locally
             // if we want to store saved locations.
 
+        }
+    }
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectItem(position);
         }
     }
 

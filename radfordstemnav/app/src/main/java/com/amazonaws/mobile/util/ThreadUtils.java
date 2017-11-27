@@ -18,6 +18,7 @@ public class ThreadUtils {
 
     /**
      * Run a runnable on the Main (UI) Thread.
+     *
      * @param runnable the runnable
      */
     public static void runOnUiThread(final Runnable runnable) {

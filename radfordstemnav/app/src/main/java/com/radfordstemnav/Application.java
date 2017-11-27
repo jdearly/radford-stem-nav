@@ -13,12 +13,12 @@ import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.amazonaws.AmazonClientException;
-import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobile.auth.core.IdentityManager;
 import com.amazonaws.mobile.auth.facebook.FacebookButton;
 import com.amazonaws.mobile.auth.facebook.FacebookSignInProvider;
 import com.amazonaws.mobile.auth.ui.AuthUIConfiguration;
 import com.amazonaws.mobile.auth.userpools.CognitoUserPoolsSignInProvider;
+import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobile.util.AbstractApplicationLifeCycleHelper;
 import com.amazonaws.mobileconnectors.pinpoint.PinpointConfiguration;
 import com.amazonaws.mobileconnectors.pinpoint.PinpointManager;
@@ -30,22 +30,29 @@ public class Application extends MultiDexApplication {
     private static final String LOG_TAG = Application.class.getSimpleName();
     public static AWSConfiguration awsConfiguration;
     public static PinpointManager pinpointManager;
-    private AbstractApplicationLifeCycleHelper applicationLifeCycleHelper;
-
     /**
      * To change the logo and background color, use the following API
-     *
+     * <p>
      * AuthUIConfiguration sAuthUIConfiguration =
-     *              new AuthUIConfiguration.Builder()
-     *                  .logoResId(R.drawable.image);
-     *                  .backgroundColor(Color.BLACK);
-     *
+     * new AuthUIConfiguration.Builder()
+     * .logoResId(R.drawable.image);
+     * .backgroundColor(Color.BLACK);
      */
     public static AuthUIConfiguration sAuthUIConfiguration =
-        new AuthUIConfiguration.Builder()
-                .userPools(true)
-                .signInButton(FacebookButton.class)
-                .build();
+            new AuthUIConfiguration.Builder()
+                    .userPools(true)
+                    .signInButton(FacebookButton.class)
+                    .build();
+    private static Context mContext;
+    private AbstractApplicationLifeCycleHelper applicationLifeCycleHelper;
+
+    public static Context getContext() {
+        return mContext;
+    }
+
+    public static void setContext(Context mContext) {
+        Application.mContext = mContext;
+    }
 
     @Override
     public void onCreate() {
@@ -56,15 +63,6 @@ public class Application extends MultiDexApplication {
         Log.d(LOG_TAG, "Application.onCreate - Application initialized OK");
     }
 
-    private static Context mContext;
-
-    public static Context getContext() {
-        return mContext;
-    }
-
-    public static void setContext(Context mContext) {
-        Application.mContext = mContext;
-    }
     private void initializeApplication() {
         awsConfiguration = new AWSConfiguration(this);
 

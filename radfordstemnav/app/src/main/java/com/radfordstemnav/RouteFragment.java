@@ -19,11 +19,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-import com.amazonaws.auth.AWSAbstractCognitoDeveloperIdentityProvider;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
@@ -45,7 +42,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONObject;
@@ -72,64 +68,67 @@ import java.util.concurrent.TimeoutException;
  * create an instance of this fragment.
  */
 public class RouteFragment extends Fragment implements OnMapReadyCallback,
-    GoogleApiClient.ConnectionCallbacks,
-    GoogleApiClient.OnConnectionFailedListener,
-    LocationListener
-    {
-        private static final String ARG_PARAM1 = "selection";
-        private String mParam1;
-        private GoogleMap mMap;
-        GoogleApiClient mGoogleApiClient;
-        Location mLastLocation;
-        Marker mCurrLocationMarker;
-        LocationRequest mLocationRequest;
-        LatLng dest;
-        
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
 
-        public RouteFragment() {
-            // Required empty public constructor
-        }
-        public static RouteFragment newInstance(String param1) {
-            RouteFragment fragment = new RouteFragment();
-            Bundle args = new Bundle();
-            args.putString(ARG_PARAM1, param1);
-            fragment.setArguments(args);
-            return fragment;
-        }
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    private static final String ARG_PARAM1 = "selection";
+    // Dialog creation to allow the user to select the map type
+    private static final CharSequence[] MAP_TYPE_ITEMS =
+            {"Road Map", "Hybrid", "Satellite", "Terrain"};
+    GoogleApiClient mGoogleApiClient;
+    Location mLastLocation;
+    Marker mCurrLocationMarker;
+    LocationRequest mLocationRequest;
+    LatLng dest;
+    Context context;
+    private String mParam1;
+    private GoogleMap mMap;
 
-        public void onAttach(Context context) {
-            super.onAttach(context);
-            if (context instanceof HomeFragment.OnFragmentInteractionListener) {
-                HomeFragment.OnFragmentInteractionListener routeListener = (HomeFragment.OnFragmentInteractionListener) context;
-            } else {
-                throw new RuntimeException(context.toString()
-                        + " must implement OnFragmentInteractionListener");
-            }
+    public RouteFragment() {
+        // Required empty public constructor
+    }
+
+    public static RouteFragment newInstance(String param1) {
+        RouteFragment fragment = new RouteFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof HomeFragment.OnFragmentInteractionListener) {
+            HomeFragment.OnFragmentInteractionListener routeListener = (HomeFragment.OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
         }
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                checkLocationPermission();
-            }
-            if (getArguments() != null) {
-                mParam1 = getArguments().getString(ARG_PARAM1);
-            }
-            System.out.println("ITEM ID: " + mParam1);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkLocationPermission();
         }
-        Context context;
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.fragment_route, container, false);
-            context = getActivity().getApplicationContext();
-            SupportMapFragment mapFrag = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
-            mapFrag.getMapAsync(this);
-            return view;
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
         }
-        // Dialog creation to allow the user to select the map type
-        private static final CharSequence[] MAP_TYPE_ITEMS =
-                {"Road Map", "Hybrid", "Satellite", "Terrain"};
+        System.out.println("ITEM ID: " + mParam1);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_route, container, false);
+        context = getActivity().getApplicationContext();
+        SupportMapFragment mapFrag = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
+        mapFrag.getMapAsync(this);
+        return view;
+    }
 
     private void showMapTypeSelectorDialog() {
         // Prepare the dialog by setting up a Builder.
@@ -175,10 +174,7 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         ConnectivityManager cm = (ConnectivityManager)
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-            return true;
-        }
-        return false;
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     @Override
@@ -195,7 +191,6 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
                 buildGoogleApiClient();
                 mMap.setMyLocationEnabled(true);
             } else {
-                //checkLocationPermission();
             }
         } else {
             buildGoogleApiClient();
@@ -212,7 +207,6 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
             e.printStackTrace();
         }
     }
-
 
     public void generateRoute(LatLng current) {
 
@@ -240,9 +234,8 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         // Output format
         String output = "json";
 
-        // Building the url to the web service
+        // Building the url to Google Directions web service
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
-
         return url;
     }
 
@@ -285,10 +278,140 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         return data;
     }
 
-        public interface OnFragmentInteractionListener {
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(1000);
+        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
 
-        // Fetches data from url passed
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        if (mCurrLocationMarker != null) {
+            mCurrLocationMarker.remove();
+        }
+        if (!isOnline()) {
+            new AlertDialog.Builder(getActivity())
+                    .setTitle("Network Not Detected")
+                    .setMessage("Please verify your device is connected to a network to generate the route.")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            // Do nothing
+                        }
+                    })
+                    .create()
+                    .show();
+        }
+
+        // Place user's current location marker
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        // Generates a new route as the user moves
+
+        generateRoute(latLng);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(latLng);
+        mMap.animateCamera(cameraUpdate);
+        if (mGoogleApiClient != null) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        }
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        // TODO
+    }
+
+    private void checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                // Give a reason why location services are required. Once the user acknowledges the
+                // explanation, permission prompt should show
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Location Permission Required")
+                        .setMessage("Radford Navigator requires Location Services, please grant permission to use location functionality.")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // The following should prompt the user for permissions after the explanation above
+                                ActivityCompat.requestPermissions(getActivity(),
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        MY_PERMISSIONS_REQUEST_LOCATION);
+                            }
+                        })
+                        .create()
+                        .show();
+
+            } else {
+                // Request the permission on first-time startup and permissions have not yet been
+                // allowed or denied.
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // If permission was granted, the app will then load the activity with users location
+                    if (ContextCompat.checkSelfPermission(getActivity(),
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+
+                        if (mGoogleApiClient == null) {
+                            buildGoogleApiClient();
+                        }
+                        mMap.setMyLocationEnabled(true);
+                    }
+                } else {
+                    // If permission is denied, this displays to the user a confirmation.
+                    // The app shows the map activity currently, but does not get the user's location.
+                    Toast.makeText(getActivity(), "Location permission denied", Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
+            // Other permission requests can be added here.
+        }
+    }
+
+    public interface OnFragmentInteractionListener {
+    }
+
+    // Fetches data from url passed
     private class FetchUrl extends AsyncTask<String, Void, String> {
 
         @Override
@@ -387,196 +510,60 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        mGoogleApiClient.connect();
-    }
+    private class database extends AsyncTask<LatLng, LatLng, LatLng> {
+        @Override
+        protected LatLng doInBackground(LatLng... params) {
 
-    @Override
-    public void onConnected(Bundle bundle) {
+            CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                    context,    /* get the context for the application */
+                    "us-east-1:843f215d-5abf-42e6-96a0-b64dd0b333b0",    /* Identity Pool ID */
+                    Regions.US_EAST_1           /* Region for your identity pool--US_EAST_1 or EU_WEST_1*/
+            );
+            AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentialsProvider);
+            DynamoDBMapper mapper = new DynamoDBMapper(ddbClient);
+            LocationsDO destination = new LocationsDO();
+            RecentsFavoritesDO recentLocation = new RecentsFavoritesDO();
+            destination.setCategory("test");
+            destination.setName(mParam1);
 
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setFastestInterval(1000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        }
+            recentLocation.setCategory("recents");
+            recentLocation.setUserId(credentialsProvider.getIdentityId());
+            recentLocation.setName(mParam1);
+            System.out.println("NAME: " + mParam1);
 
-    }
+            DynamoDBQueryExpression<LocationsDO> queryExpr = new DynamoDBQueryExpression<LocationsDO>()
+                    .withHashKeyValues(destination);
+            DynamoDBQueryExpression<RecentsFavoritesDO> recentQueryExpr = new DynamoDBQueryExpression<RecentsFavoritesDO>()
+                    .withHashKeyValues(recentLocation);
+            PaginatedQueryList<LocationsDO> latlng = mapper.query(LocationsDO.class, queryExpr);
+            PaginatedQueryList<RecentsFavoritesDO> recentLoc = mapper.query(RecentsFavoritesDO.class, recentQueryExpr);
+            System.out.println("SIZE OF RECENTLOC: " + recentLoc.size());
 
-    @Override
-    public void onConnectionSuspended(int i) {
+            for (int i = 0; i < latlng.size(); i++) {
+                if (latlng.get(i).getName().equals(mParam1)) {
+                    Double lat = latlng.get(i).getLatitude();
+                    Double lng = latlng.get(i).getLongitude();
+                    dest = new LatLng(lat, lng);
 
-    }
+                    recentLocation.setUserId(credentialsProvider.getIdentityId());
+                    recentLocation.setCategory("recents");
+                    recentLocation.setLatitude(lat);
+                    recentLocation.setLongitude(lng);
+                    recentLocation.setName(mParam1);
+                    recentLocation.setTTL(12345);
+                    mapper.save(recentLocation);
 
-    @Override
-    public void onLocationChanged(Location location) {
-        mLastLocation = location;
-        if (mCurrLocationMarker != null) {
-            mCurrLocationMarker.remove();
-        }
-        if (!isOnline()) {
-            new AlertDialog.Builder(getActivity())
-                    .setTitle("Network Not Detected")
-                    .setMessage("Please verify your device is connected to a network to generate the route.")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            // Do nothing
-                        }
-                    })
-                    .create()
-                    .show();
-        }
-
-        // Place user's current location marker
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        // Generates a new route as the user moves
-
-        generateRoute(latLng);
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(latLng);
-        mMap.animateCamera(cameraUpdate);
-        if (mGoogleApiClient != null) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        }
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        // TODO
-    }
-
-    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-
-    private void checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-                // Give a reason why location services are required. Once the user acknowledges the
-                // explanation, permission prompt should show
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("Location Permission Required")
-                        .setMessage("Radford Navigator requires Location Services, please grant permission to use location functionality.")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                // The following should prompt the user for permissions after the explanation above
-                                ActivityCompat.requestPermissions(getActivity(),
-                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                        MY_PERMISSIONS_REQUEST_LOCATION);
-                            }
-                        })
-                        .create()
-                        .show();
-
-            } else {
-                // Request the permission on first-time startup and permissions have not yet been
-                // allowed or denied.
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION);
-            }
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // If permission was granted, the app will then load the activity with users location
-                    if (ContextCompat.checkSelfPermission(getActivity(),
-                            Manifest.permission.ACCESS_FINE_LOCATION)
-                            == PackageManager.PERMISSION_GRANTED) {
-
-                        if (mGoogleApiClient == null) {
-                            buildGoogleApiClient();
-                        }
-                        mMap.setMyLocationEnabled(true);
-                    }
-
-                } else {
-
-                    // If permission is denied, this displays to the user a confirmation.
-                    // The app shows the map activity currently, but does not get the user's location.
-                    Toast.makeText(getActivity(), "Location permission denied", Toast.LENGTH_LONG).show();
                 }
-                return;
             }
+            return dest;
+        }
 
-            // Other permission requests can be added here. Such as permission to store locally
-            // if we want to store saved locations.
+        @Override
+        protected void onPreExecute() {
+        }
 
+        @Override
+        protected void onPostExecute(LatLng params) {
         }
     }
-
-        private class database extends AsyncTask<LatLng, LatLng, LatLng> {
-            @Override
-            protected LatLng doInBackground(LatLng... params) {
-
-                CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                        context,    /* get the context for the application */
-                        "us-east-1:843f215d-5abf-42e6-96a0-b64dd0b333b0",    /* Identity Pool ID */
-                        Regions.US_EAST_1           /* Region for your identity pool--US_EAST_1 or EU_WEST_1*/
-                );
-                AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentialsProvider);
-                //AmazonDynamoDBClient recentClient = new AmazonDynamoDBClient(credentialsProvider);
-                DynamoDBMapper mapper = new DynamoDBMapper(ddbClient);
-                //DynamoDBMapper recentMapper = new DynamoDBMapper(recentClient);
-                LocationsDO destination = new LocationsDO();
-                RecentsFavoritesDO recentLocation = new RecentsFavoritesDO();
-                destination.setCategory("test");
-                destination.setName(mParam1);
-
-                recentLocation.setCategory("recents");
-                recentLocation.setUserId(credentialsProvider.getIdentityId());
-                recentLocation.setName(mParam1);
-                System.out.println("NAME: " + mParam1);
-
-                DynamoDBQueryExpression<LocationsDO> queryExpr = new DynamoDBQueryExpression<LocationsDO>()
-                        .withHashKeyValues(destination);
-                DynamoDBQueryExpression<RecentsFavoritesDO> recentQueryExpr = new DynamoDBQueryExpression<RecentsFavoritesDO>()
-                        .withHashKeyValues(recentLocation);
-                PaginatedQueryList<LocationsDO> latlng = mapper.query(LocationsDO.class, queryExpr);
-                PaginatedQueryList<RecentsFavoritesDO> recentLoc = mapper.query(RecentsFavoritesDO.class, recentQueryExpr);
-                System.out.println("SIZE OF RECENTLOC: "+ recentLoc.size());
-
-                for (int i = 0; i < latlng.size(); i++) {
-                    if (latlng.get(i).getName().equals(mParam1)) {
-                        Double lat = latlng.get(i).getLatitude();
-                        Double lng = latlng.get(i).getLongitude();
-                        dest = new LatLng(lat, lng);
-
-                                recentLocation.setUserId(credentialsProvider.getIdentityId());
-                                recentLocation.setCategory("recents");
-                                recentLocation.setLatitude(lat);
-                                recentLocation.setLongitude(lng);
-                                recentLocation.setName(mParam1);
-                                recentLocation.setTTL(12345);
-                                mapper.save(recentLocation);
-
-                        }
-                    }
-                return dest;
-            }
-            @Override
-            protected void onPreExecute() {}
-            @Override
-            protected void onPostExecute(LatLng params){
-            }
-        }
 }

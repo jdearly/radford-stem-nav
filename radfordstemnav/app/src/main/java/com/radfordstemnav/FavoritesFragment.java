@@ -38,16 +38,13 @@ import java.util.concurrent.TimeoutException;
  * Use the {@link FavoritesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FavoritesFragment extends Fragment implements RouteFragment.OnFragmentInteractionListener
-{
+public class FavoritesFragment extends Fragment implements RouteFragment.OnFragmentInteractionListener {
 
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     ArrayList<String> fav_menu_items;
     ListView listView;
-
+    Context context;
     private OnFragmentInteractionListener homeListener;
 
     public FavoritesFragment() {
@@ -59,15 +56,13 @@ public class FavoritesFragment extends Fragment implements RouteFragment.OnFragm
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment FavoritesFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static FavoritesFragment newInstance(String param1, String param2) {
+
+    public static FavoritesFragment newInstance(String param1) {
         FavoritesFragment fragment = new FavoritesFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -82,15 +77,15 @@ public class FavoritesFragment extends Fragment implements RouteFragment.OnFragm
                     + " must implement OnFragmentInteractionListener");
         }
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             String mParam1 = getArguments().getString(ARG_PARAM1);
-            String mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-    Context context;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -106,7 +101,7 @@ public class FavoritesFragment extends Fragment implements RouteFragment.OnFragm
             e.printStackTrace();
         }
 
-        listView = (ListView) view.findViewById(R.id.favoriteMenu);
+        listView = view.findViewById(R.id.favoriteMenu);
 
         System.out.println("MENU ITEM SIZE: " + fav_menu_items.size());
         ArrayAdapter<String> listViewAdapter = new ArrayAdapter<>(
@@ -138,7 +133,7 @@ public class FavoritesFragment extends Fragment implements RouteFragment.OnFragm
         String key = (String) listView.getItemAtPosition(info.position);
         FragmentManager fragmentManager = getFragmentManager();
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.route:
                 Bundle routeArgs = new Bundle();
                 routeArgs.putString("selection", key);
@@ -171,18 +166,6 @@ public class FavoritesFragment extends Fragment implements RouteFragment.OnFragm
         }
     }
 
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (homeListener != null) {
-            homeListener.onFragmentInteraction(uri);
-        }
-    }
-
-    public void routeHepler() {
-
-    }
-
     @Override
     public void onDetach() {
         super.onDetach();
@@ -201,10 +184,8 @@ public class FavoritesFragment extends Fragment implements RouteFragment.OnFragm
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        // required
     }
-
 
 
     private class fav_list extends AsyncTask<ArrayList, ArrayList, ArrayList> {
@@ -228,8 +209,7 @@ public class FavoritesFragment extends Fragment implements RouteFragment.OnFragm
 
             List<RecentsFavoritesDO> fav_location_list = mapper.query(RecentsFavoritesDO.class, favQueryExpression);
 
-            for (int i = 0; i < fav_location_list.size(); i++)
-            {
+            for (int i = 0; i < fav_location_list.size(); i++) {
                 if (fav_location_list.get(i).getCategory().equals("favorites")) {
                     fav_menu.add(fav_location_list.get(i).getName());
                 }
@@ -238,11 +218,12 @@ public class FavoritesFragment extends Fragment implements RouteFragment.OnFragm
             return fav_menu;
         }
 
+        @Override
+        protected void onPreExecute() {
+        }
 
         @Override
-        protected void onPreExecute() {}
-        @Override
-        protected void onPostExecute(ArrayList params){
+        protected void onPostExecute(ArrayList params) {
         }
     }
 }

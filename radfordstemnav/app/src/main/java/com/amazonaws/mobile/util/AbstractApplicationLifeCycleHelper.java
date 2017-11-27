@@ -27,11 +27,14 @@ public abstract class AbstractApplicationLifeCycleHelper implements Application.
     private static final String LOG_TAG = AbstractApplicationLifeCycleHelper.class.getSimpleName();
     private static final String ACTION_SCREEN_OFF = "android.intent.action.SCREEN_OFF";
     private boolean inForeground = false;
-    /** Tracks the lifecycle of activities that have not stopped (including those restarted). */
+    /**
+     * Tracks the lifecycle of activities that have not stopped (including those restarted).
+     */
     private WeakHashMap<Activity, String> activityLifecycleStateMap = new WeakHashMap<>();
 
     /**
      * Constructor. Registers to receive activity lifecycle events.
+     *
      * @param application the Android Application class.
      */
     @RequiresApi(api = Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -92,6 +95,7 @@ public abstract class AbstractApplicationLifeCycleHelper implements Application.
 
     /**
      * Call this method when your Application trims memory.
+     *
      * @param level the level passed through from Application.onTrimMemory().
      */
     public void handleOnTrimMemory(final int level) {

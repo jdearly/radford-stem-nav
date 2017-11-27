@@ -21,11 +21,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedQueryList;
 import com.amazonaws.models.nosql.LocationsDO;
 import com.amazonaws.models.nosql.RecentsFavoritesDO;
 import com.amazonaws.regions.Regions;
-import com.amazonaws.services.dynamodbv2.*;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,14 +45,12 @@ import java.util.concurrent.TimeoutException;
  */
 public class HomeFragment extends Fragment implements RouteFragment.OnFragmentInteractionListener {
 
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     ArrayList<String> menu_items;
     ListView listView;
     ArrayAdapter<String> listViewAdapter;
-
+    Context context;
     private OnFragmentInteractionListener homeListener;
 
     public HomeFragment() {
@@ -62,15 +62,12 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment HomeFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(String param1, String param2) {
+    public static HomeFragment newInstance(String param1) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -91,7 +88,6 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             String mParam1 = getArguments().getString(ARG_PARAM1);
-            String mParam2 = getArguments().getString(ARG_PARAM2);
         }
         context = getActivity().getApplicationContext();
 
@@ -102,13 +98,10 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (TimeoutException e) {
-
-            e.printStackTrace();
-        }
+           e.printStackTrace();
+            }
 
     }
-
-    Context context;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -126,7 +119,7 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
 
         EditText editText = (EditText) view.findViewById(R.id.searchView);
 
-        editText.addTextChangedListener(new TextWatcher(){
+        editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
                 // When user changed the Text
@@ -136,13 +129,10 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
             @Override
             public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
                                           int arg3) {
-                // TODO Auto-generated method stub
-
             }
 
             @Override
             public void afterTextChanged(Editable arg0) {
-                // TODO Auto-generated method stub
             }
         });
 
@@ -150,12 +140,12 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
         registerForContextMenu(listView);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
 
-    {
-        @Override
-        public void onItemClick (AdapterView < ? > adapterView, View view,int i, long l){
-        view.showContextMenu();
-    }
-    });
+        {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                view.showContextMenu();
+            }
+        });
 
         return view;
     }
@@ -174,7 +164,7 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
         String key = (String) listView.getItemAtPosition(info.position);
         FragmentManager fragmentManager = getFragmentManager();
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.route:
                 Bundle routeArgs = new Bundle();
                 routeArgs.putString("selection", key);
@@ -184,7 +174,7 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
                         .replace(R.id.main_fragment_container, routeFrag)
                         .addToBackStack("")
                         .commit()
-                        ;
+                ;
                 return true;
 
             case R.id.directions:
@@ -208,18 +198,6 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
         }
     }
 
-
-        // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (homeListener != null) {
-            homeListener.onFragmentInteraction(uri);
-        }
-    }
-
-    public void routeHepler() {
-
-    }
-
     @Override
     public void onDetach() {
         super.onDetach();
@@ -238,10 +216,8 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        // required
     }
-
 
 
     private class db extends AsyncTask<ArrayList, ArrayList, ArrayList> {
@@ -264,8 +240,7 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
 
             List<LocationsDO> location_list = mapper.query(LocationsDO.class, queryExpression);
 
-            for (int i = 0; i < location_list.size(); i++)
-            {
+            for (int i = 0; i < location_list.size(); i++) {
                 menu.add(location_list.get(i).getName());
                 System.out.println("ITEM ID: " + menu);
             }
@@ -275,52 +250,52 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
 
 
         @Override
-        protected void onPreExecute() {}
+        protected void onPreExecute() {
+        }
+
         @Override
-        protected void onPostExecute(ArrayList params){
+        protected void onPostExecute(ArrayList params) {
         }
     }
 
 
-private class favDB extends AsyncTask<String, String, String> {
+    private class favDB extends AsyncTask<String, String, String> {
 
-    @Override
-    protected String doInBackground(String... strings) {
-        String location = strings[0];
-        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                context,    /* get the context for the application */
-                "us-east-1:843f215d-5abf-42e6-96a0-b64dd0b333b0",    /* Identity Pool ID */
-                Regions.US_EAST_1           /* Region for your identity pool--US_EAST_1 or EU_WEST_1*/
-        );
-        AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentialsProvider);
-        DynamoDBMapper mapper = new DynamoDBMapper(ddbClient);
-        LocationsDO locations = new LocationsDO();
-        RecentsFavoritesDO favorite = new RecentsFavoritesDO();
-        locations.setCategory("test");
-        locations.setName(location);
+        @Override
+        protected String doInBackground(String... strings) {
+            String location = strings[0];
+            CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                    context,    /* get the context for the application */
+                    "us-east-1:843f215d-5abf-42e6-96a0-b64dd0b333b0",    /* Identity Pool ID */
+                    Regions.US_EAST_1           /* Region for your identity pool--US_EAST_1 or EU_WEST_1*/
+            );
+            AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentialsProvider);
+            DynamoDBMapper mapper = new DynamoDBMapper(ddbClient);
+            LocationsDO locations = new LocationsDO();
+            RecentsFavoritesDO favorite = new RecentsFavoritesDO();
+            locations.setCategory("test");
+            locations.setName(location);
 
-        DynamoDBQueryExpression<LocationsDO> favQueryExpr = new DynamoDBQueryExpression<LocationsDO>()
-                .withHashKeyValues(locations);
-        PaginatedQueryList<LocationsDO> latlng = mapper.query(LocationsDO.class, favQueryExpr);
+            DynamoDBQueryExpression<LocationsDO> favQueryExpr = new DynamoDBQueryExpression<LocationsDO>()
+                    .withHashKeyValues(locations);
+            PaginatedQueryList<LocationsDO> latlng = mapper.query(LocationsDO.class, favQueryExpr);
 
-        for (int i = 0; i < latlng.size(); i++) {
-            if (latlng.get(i).getName().equals(location)) {
-                Double lat = latlng.get(i).getLatitude();
-                Double lng = latlng.get(i).getLongitude();
+            for (int i = 0; i < latlng.size(); i++) {
+                if (latlng.get(i).getName().equals(location)) {
+                    Double lat = latlng.get(i).getLatitude();
+                    Double lng = latlng.get(i).getLongitude();
 
-                favorite.setUserId(credentialsProvider.getIdentityId());
-                favorite.setCategory("favorites");
-                favorite.setLatitude(lat);
-                favorite.setLongitude(lng);
-                favorite.setName(location);
-                mapper.save(favorite);
-
+                    favorite.setUserId(credentialsProvider.getIdentityId());
+                    favorite.setCategory("favorites");
+                    favorite.setLatitude(lat);
+                    favorite.setLongitude(lng);
+                    favorite.setName(location);
+                    mapper.save(favorite);
+                }
             }
-
+            return null;
         }
-        return null;
     }
-}
 }
 
 

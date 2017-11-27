@@ -20,13 +20,10 @@ import android.widget.TextView;
  * create an instance of this fragment.
  */
 public class DirectionsFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "Directions";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
-    private String mParam2;
 
     private DirectionsFragment.OnFragmentInteractionListener mListener;
 
@@ -39,11 +36,9 @@ public class DirectionsFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment DirectionsFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static DirectionsFragment newInstance(String param1, String param2) {
+    public static DirectionsFragment newInstance(String param1) {
         DirectionsFragment fragment = new DirectionsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
@@ -72,29 +67,16 @@ public class DirectionsFragment extends Fragment {
         return inf;
     }
 
-    public void changeScreen(View view)
-    {
+    public void changeScreen(View view) {
         String button_text;
-        button_text = ((Button)view).getText().toString();
+        button_text = ((Button) view).getText().toString();
 
-        if(button_text.equals("ROUTE"))
-        {
+        if (button_text.equals("ROUTE")) {
 
-        }
-        else if(button_text.equals("DIRECTIONS"))
-        {
+        } else if (button_text.equals("DIRECTIONS")) {
 
-        }
-        else if(button_text.equals("SAVE AS FAVORITE"))
-        {
+        } else if (button_text.equals("SAVE AS FAVORITE")) {
 
-        }
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
         }
     }
 
@@ -126,7 +108,5 @@ public class DirectionsFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

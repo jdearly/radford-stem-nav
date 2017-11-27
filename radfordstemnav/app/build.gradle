@@ -9,7 +9,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 26
     buildToolsVersion '26.0.2'
 
     defaultConfig {
@@ -40,31 +40,31 @@ android {
 }
 
 dependencies {
-    implementation 'com.android.support:recyclerview-v7:24.2.1'
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile fileTree(include: ['*.jar'], dir: 'app/libs')
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:support-v4:24.2.1'
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:support-v4:26.1.0'
     compile 'com.amazonaws:aws-android-sdk-core:2.6.+'
     compile 'com.amazonaws:aws-android-sdk-ddb:2.6.+'
     compile 'com.amazonaws:aws-android-sdk-ddb-mapper:2.6.+'
     compile 'com.amazonaws:aws-android-sdk-pinpoint:2.6.+'
     compile 'com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.6.+'
-    compile 'com.android.support:customtabs:24.2.1'
+    compile 'com.android.support:customtabs:26.1.0'
     compile 'com.amazonaws:aws-android-sdk-core:2.6.7'
     compile 'com.amazonaws:aws-android-sdk-s3:2.6.7'
     compile 'com.amazonaws:aws-android-sdk-ddb:2.6.7'
     compile('com.amazonaws:aws-android-sdk-auth-core:2.6.+@aar') {
-        transitive = true;
+        transitive = true
     }
     compile('com.amazonaws:aws-android-sdk-auth-ui:2.6.+@aar') {
-        transitive = true;
+        transitive = true
     }
     compile('com.amazonaws:aws-android-sdk-auth-userpools:2.6.+@aar') {
-        transitive = true;
+        transitive = true
     }
     compile('com.amazonaws:aws-android-sdk-auth-facebook:2.6.+@aar') {
-        transitive = true;
+        transitive = true
     }
     compile 'com.android.support:multidex:1.0.2'
     compile 'com.google.code.gson:gson:2.8.0'
@@ -77,6 +77,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:11.6.0'
     compile 'com.google.android.gms:play-services-location:11.6.0'
     testCompile 'junit:junit:4.12'
+    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
 
 }
 

@@ -2,9 +2,6 @@ package com.radfordstemnav.navigation;
 
 import android.graphics.BitmapFactory;
 import android.os.Build;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -12,9 +9,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -22,7 +16,6 @@ import android.widget.TextView;
 import com.amazonaws.mobile.auth.core.IdentityManager;
 import com.amazonaws.mobile.auth.core.IdentityProvider;
 import com.radfordstemnav.R;
-
 
 import static com.radfordstemnav.R.string.app_name;
 
@@ -33,9 +26,10 @@ public class NavigationDrawer {
 
     /**
      * Constructs the Navigation Drawer.
-     * @param activity the activity that will contain this navigation drawer.
-     * @param toolbar the toolbar the activity is using.
-     * @param layout the DrawerLayout for this navigation drawer.
+     *
+     * @param activity             the activity that will contain this navigation drawer.
+     * @param toolbar              the toolbar the activity is using.
+     * @param layout               the DrawerLayout for this navigation drawer.
      * @param drawerItemsContainer the parent view group for the navigation drawer items.
      */
     public NavigationDrawer(final AppCompatActivity activity,
@@ -111,14 +105,13 @@ public class NavigationDrawer {
                 identityManager.getCurrentIdentityProvider();
 
         final ImageView imageView =
-            (ImageView)activity.findViewById(R.id.userImage);
+                (ImageView) activity.findViewById(R.id.userImage);
 
         if (identityProvider == null) {
             // Not signed in
             if (Build.VERSION.SDK_INT < 22) {
                 imageView.setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.mipmap.user));
-            }
-            else {
+            } else {
                 imageView.setImageDrawable(activity.getDrawable(R.mipmap.user));
             }
 

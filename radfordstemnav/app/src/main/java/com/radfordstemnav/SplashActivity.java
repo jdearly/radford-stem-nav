@@ -8,23 +8,26 @@
 //
 package com.radfordstemnav;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Toast;
-import com.amazonaws.mobile.auth.core.DefaultSignInResultHandler;
+
 import com.amazonaws.mobile.auth.core.IdentityManager;
 import com.amazonaws.mobile.auth.core.IdentityProvider;
 import com.amazonaws.mobile.auth.core.StartupAuthErrorDetails;
 import com.amazonaws.mobile.auth.core.StartupAuthResult;
 import com.amazonaws.mobile.auth.core.StartupAuthResultHandler;
 import com.amazonaws.mobile.auth.core.signin.AuthException;
-
-import com.amazonaws.mobile.auth.ui.SignInActivity;
-
-import java.lang.ref.WeakReference;
 
 /**
  * Splash Activity is the start-up activity that appears until a delay is expired
@@ -45,6 +48,7 @@ public class SplashActivity extends Activity implements StartupAuthResultHandler
         final IdentityManager identityManager = IdentityManager.getDefaultIdentityManager();
 
         identityManager.doStartUpAuth(this, this);
+
     }
 
     @Override
@@ -86,8 +90,31 @@ public class SplashActivity extends Activity implements StartupAuthResultHandler
             Log.e(LOG_TAG, "No Identity could be obtained. Continuing with no identity.",
                     errors.getUnauthenticatedErrorException());
         }
-        this.startActivity(new Intent(this, com.radfordstemnav.MainActivity.class)
-                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-        this.finish();
+        if (!isOnline()) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Network Not Detected")
+                    .setMessage("Radford Navigator is unable to retrieve data. Please verify internet connectivity and restart the appplication.")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            System.exit(0);
+                        }
+                    })
+                    .create()
+                    .show();
+        } else {
+            this.startActivity(new Intent(this, com.radfordstemnav.MainActivity.class)
+                    .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+            this.finish();
+        }
     }
+
+    // Checks to verify that the user has a network connecton to make the request for the route
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager)
+                this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
 }

@@ -4,24 +4,19 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
@@ -36,7 +31,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -44,23 +38,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -76,11 +56,12 @@ import java.util.concurrent.TimeoutException;
 public class MapFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener
-{
+        LocationListener {
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private static final String ARG_PARAM1 = "selection";
-    private String mParam1;
-    private GoogleMap mapMap;
+    // Dialog creation to allow the user to select the map type
+    private static final CharSequence[] MAP_TYPE_ITEMS =
+            {"Road Map", "Hybrid", "Satellite", "Terrain"};
     public HashMap<String, LatLng> campus_locations = new HashMap<>();
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
@@ -88,13 +69,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     LocationRequest mLocationRequest;
     LatLng dest;
     ArrayList<MarkerOptions> markers = new ArrayList<>();
-
-
+    Context context;
+    private String mParam1;
+    private GoogleMap mapMap;
     private OnFragmentInteractionListener mapListener;
 
     public MapFragment() {
         // Required empty public constructor
     }
+
     public static MapFragment newInstance(String param1) {
         MapFragment fragment = new MapFragment();
         Bundle args = new Bundle();
@@ -112,6 +95,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     + " must implement OnFragmentInteractionListener");
         }
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,7 +106,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             mParam1 = getArguments().getString(ARG_PARAM1);
         }
     }
-    Context context;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -132,9 +116,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         mapFrag.getMapAsync(this);
         return view;
     }
-    // Dialog creation to allow the user to select the map type
-    private static final CharSequence[] MAP_TYPE_ITEMS =
-            {"Road Map", "Hybrid", "Satellite", "Terrain"};
 
     private void showMapTypeSelectorDialog() {
         // Prepare the dialog by setting up a Builder.
@@ -181,12 +162,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         ConnectivityManager cm = (ConnectivityManager)
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-            return true;
-        }
-        return false;
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
-
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -221,8 +198,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         } catch (TimeoutException e) {
             e.printStackTrace();
         }
-        for (int i = 0; i < markers.size(); i++)
-        {
+        for (int i = 0; i < markers.size(); i++) {
             mapMap.addMarker(markers.get(i));
         }
     }
@@ -290,8 +266,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     public void onConnectionFailed(ConnectionResult connectionResult) {
         // TODO
     }
-
-    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -386,7 +360,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             PaginatedQueryList<LocationsDO> latlng = mapper.query(LocationsDO.class, queryExpr);
 
             for (int i = 0; i < latlng.size(); i++) {
-                
+
                 Double lat = latlng.get(i).getLatitude();
                 Double lng = latlng.get(i).getLongitude();
                 dest = new LatLng(lat, lng);
@@ -398,9 +372,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
 
         @Override
-        protected void onPreExecute() {}
+        protected void onPreExecute() {
+        }
+
         @Override
-        protected void onPostExecute(ArrayList<MarkerOptions> params){
+        protected void onPostExecute(ArrayList<MarkerOptions> params) {
         }
     }
 }
