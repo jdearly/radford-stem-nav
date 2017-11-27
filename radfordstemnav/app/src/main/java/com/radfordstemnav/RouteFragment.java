@@ -117,7 +117,6 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
         }
-        System.out.println("ITEM ID: " + mParam1);
     }
 
     @Override
@@ -537,7 +536,6 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
                     .withHashKeyValues(recentLocation);
             PaginatedQueryList<LocationsDO> latlng = mapper.query(LocationsDO.class, queryExpr);
             PaginatedQueryList<RecentsFavoritesDO> recentLoc = mapper.query(RecentsFavoritesDO.class, recentQueryExpr);
-            System.out.println("SIZE OF RECENTLOC: " + recentLoc.size());
 
             for (int i = 0; i < latlng.size(); i++) {
                 if (latlng.get(i).getName().equals(mParam1)) {
@@ -550,7 +548,7 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
                     recentLocation.setLatitude(lat);
                     recentLocation.setLongitude(lng);
                     recentLocation.setName(mParam1);
-                    recentLocation.setTTL(12345);
+                    recentLocation.setTTL(1204000);
                     mapper.save(recentLocation);
 
                 }
