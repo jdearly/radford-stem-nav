@@ -98,9 +98,7 @@ public class FavoritesFragment extends Fragment implements RouteFragment.OnFragm
         View view = inflater.inflate(R.layout.fragment_event, container, false);
         context = getActivity().getApplicationContext();
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE) {
-                new fav_list().execute().get(1000, TimeUnit.MILLISECONDS);
-            }
+            new fav_list().execute().get(1000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {

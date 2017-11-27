@@ -98,9 +98,7 @@ public class RecentsFragment extends Fragment implements RouteFragment.OnFragmen
         View view = inflater.inflate(R.layout.fragment_recents, container, false);
         context = getActivity().getApplicationContext();
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE) {
-                new db().execute().get(1000, TimeUnit.MILLISECONDS);
-            }
+            new db().execute().get(1000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {

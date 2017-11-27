@@ -3,10 +3,11 @@ package com.radfordstemnav;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -39,8 +41,7 @@ import java.util.concurrent.TimeoutException;
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment implements RouteFragment.OnFragmentInteractionListener
-{
+public class HomeFragment extends Fragment implements RouteFragment.OnFragmentInteractionListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -48,13 +49,14 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
     private static final String ARG_PARAM2 = "param2";
     ArrayList<String> menu_items;
     ListView listView;
+    ArrayAdapter<String> listViewAdapter;
 
     private OnFragmentInteractionListener homeListener;
 
     public HomeFragment() {
         // Required empty public constructor
     }
-    
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -83,6 +85,7 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
                     + " must implement OnFragmentInteractionListener");
         }
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,17 +93,10 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
             String mParam1 = getArguments().getString(ARG_PARAM1);
             String mParam2 = getArguments().getString(ARG_PARAM2);
         }
-    }
-    Context context;
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
         context = getActivity().getApplicationContext();
+
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE) {
-                new db().execute().get(1000, TimeUnit.MILLISECONDS);
-            }
+            new db().execute().get(1000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -109,21 +105,56 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
             e.printStackTrace();
         }
 
+    }
+
+    Context context;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+
         listView = (ListView) view.findViewById(R.id.mainMenu);
 
-        System.out.println("MENU ITEM SIZE: " + menu_items.size());
-            ArrayAdapter<String> listViewAdapter = new ArrayAdapter<>(
-                    getActivity(),
-                    android.R.layout.simple_list_item_1,
-                    menu_items);
+        listViewAdapter = new ArrayAdapter<>(
+                getActivity(),
+                android.R.layout.simple_list_item_1,
+                menu_items);
         listView.setAdapter(listViewAdapter);
-        registerForContextMenu(listView);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        EditText editText = (EditText) view.findViewById(R.id.searchView);
+
+        editText.addTextChangedListener(new TextWatcher(){
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                view.showContextMenu();
+            public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
+                // When user changed the Text
+                HomeFragment.this.listViewAdapter.getFilter().filter(cs);
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                          int arg3) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                // TODO Auto-generated method stub
             }
         });
+
+
+        registerForContextMenu(listView);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+
+    {
+        @Override
+        public void onItemClick (AdapterView < ? > adapterView, View view,int i, long l){
+        view.showContextMenu();
+    }
+    });
+
         return view;
     }
 

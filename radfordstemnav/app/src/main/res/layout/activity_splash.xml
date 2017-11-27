@@ -19,7 +19,6 @@
         android:layout_height="wrap_content"
         android:text="@string/app_name"
         android:textColor="@color/splash_text"
-        android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
         android:textSize="36sp" />
 
