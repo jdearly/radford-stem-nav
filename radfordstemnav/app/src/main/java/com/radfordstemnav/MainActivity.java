@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         MapFragment.OnFragmentInteractionListener,
         RecentsFragment.OnFragmentInteractionListener,
         PopularFragment.OnFragmentInteractionListener,
-        EventFragment.OnFragmentInteractionListener,
         MediaFragment.OnFragmentInteractionListener,
         RouteFragment.OnFragmentInteractionListener,
         FavoritesFragment.OnFragmentInteractionListener {

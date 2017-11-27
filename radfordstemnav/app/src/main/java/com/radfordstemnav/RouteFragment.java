@@ -566,6 +566,7 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
                                 recentLocation.setLatitude(lat);
                                 recentLocation.setLongitude(lng);
                                 recentLocation.setName(mParam1);
+                                recentLocation.setTTL(12345);
                                 mapper.save(recentLocation);
 
                         }

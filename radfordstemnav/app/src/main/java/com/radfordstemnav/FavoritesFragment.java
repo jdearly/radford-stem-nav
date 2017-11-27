@@ -3,7 +3,6 @@ package com.radfordstemnav;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -95,7 +94,7 @@ public class FavoritesFragment extends Fragment implements RouteFragment.OnFragm
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_event, container, false);
+        View view = inflater.inflate(R.layout.fragment_favorite, container, false);
         context = getActivity().getApplicationContext();
         try {
             new fav_list().execute().get(1000, TimeUnit.MILLISECONDS);

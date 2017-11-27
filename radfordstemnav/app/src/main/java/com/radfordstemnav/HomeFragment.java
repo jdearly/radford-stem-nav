@@ -96,12 +96,13 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
         context = getActivity().getApplicationContext();
 
         try {
-            new db().execute().get(1000, TimeUnit.MILLISECONDS);
+            new db().execute().get(5000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (TimeoutException e) {
+
             e.printStackTrace();
         }
 
@@ -120,6 +121,7 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
                 getActivity(),
                 android.R.layout.simple_list_item_1,
                 menu_items);
+
         listView.setAdapter(listViewAdapter);
 
         EditText editText = (EditText) view.findViewById(R.id.searchView);

@@ -7,15 +7,12 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBIndexRan
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBRangeKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 @DynamoDBTable(tableName = "radfordstemnav-mobilehub-1857620739-recents-favorites")
 
 public class RecentsFavoritesDO {
     private String _userId;
     private String _name;
+    private int _tTL;
     private String _category;
     private Double _latitude;
     private Double _longitude;
@@ -37,6 +34,14 @@ public class RecentsFavoritesDO {
 
     public void setName(final String _name) {
         this._name = _name;
+    }
+    @DynamoDBAttribute(attributeName = "TTL")
+    public int getTTL() {
+        return _tTL;
+    }
+
+    public void setTTL(final int _tTL) {
+        this._tTL = _tTL;
     }
     @DynamoDBIndexHashKey(attributeName = "category", globalSecondaryIndexName = "Categories")
     @DynamoDBIndexRangeKey(attributeName = "category", globalSecondaryIndexName = "user-category-index")
