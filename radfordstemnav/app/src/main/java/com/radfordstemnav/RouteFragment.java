@@ -548,7 +548,8 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
                     recentLocation.setLatitude(lat);
                     recentLocation.setLongitude(lng);
                     recentLocation.setName(mParam1);
-                    recentLocation.setTTL(1204000);
+                    // TTL of one week, then the item is removed from the database
+                    recentLocation.setTTL((int) (System.currentTimeMillis() / 1000L)+604800);
                     mapper.save(recentLocation);
 
                 }
