@@ -100,15 +100,14 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
         } catch (TimeoutException e) {
            e.printStackTrace();
             }
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        listView = (ListView) view.findViewById(R.id.mainMenu);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        listView = view.findViewById(R.id.mainMenu);
 
         listViewAdapter = new ArrayAdapter<>(
                 getActivity(),
@@ -117,7 +116,7 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
 
         listView.setAdapter(listViewAdapter);
 
-        EditText editText = (EditText) view.findViewById(R.id.searchView);
+        EditText editText = view.findViewById(R.id.searchView);
 
         editText.addTextChangedListener(new TextWatcher() {
             @Override

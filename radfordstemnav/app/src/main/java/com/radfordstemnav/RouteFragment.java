@@ -329,7 +329,6 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         // Place user's current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         // Generates a new route as the user moves
-
         generateRoute(latLng);
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(latLng);
         mMap.animateCamera(cameraUpdate);

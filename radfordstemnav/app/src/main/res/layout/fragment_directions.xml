@@ -4,9 +4,18 @@
     android:layout_height="match_parent"
     tools:context="com.radfordstemnav.DirectionsFragment">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-    </LinearLayout>
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/dir_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="8sp"
+            android:text="Failed to gather location information to load directions."
+            android:textAlignment="textStart"
+            android:textSize="24sp" />
+    </ScrollView>
+
 </FrameLayout>

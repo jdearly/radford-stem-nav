@@ -66,6 +66,52 @@ public class DataParser {
         return routes;
     }
 
+    public List<ArrayList<String>> parseDirections(JSONObject jObject) {
+
+        List<ArrayList<String>> dir_routes = new ArrayList<>();
+        JSONArray jRoutes;
+        JSONArray jLegs;
+        JSONArray jSteps;
+
+        try {
+
+            jRoutes = jObject.getJSONArray("routes");
+
+            /** Traversing all routes */
+            for (int i = 0; i < jRoutes.length(); i++) {
+                jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
+                ArrayList dir_path = new ArrayList<>();
+
+                /** Traversing all legs */
+                for (int j = 0; j < jLegs.length(); j++) {
+                    jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
+
+                    /** Traversing all steps */
+                    for (int k = 0; k < jSteps.length(); k++) {
+                            String navig1 = "";
+                            String distance = "";
+                            if ( ((JSONObject)((JSONObject)jSteps.get(k)).get("distance")).get("text") !=null)
+                                distance = ((JSONObject)((JSONObject)jSteps.get(k)).get("distance")).getString("text");
+                            if(  ((JSONObject) jSteps.get(k)).get("html_instructions") !=null)
+                                navig1 = ((JSONObject) jSteps.get(k)).getString("html_instructions");
+
+                            dir_path.add(navig1);
+                            dir_path.add(distance);
+
+                    }
+                    }
+                    dir_routes.add(dir_path);
+                }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+        }
+
+
+        return dir_routes;
+    }
+
 
     /**
      * Method to decode polyline points
@@ -105,3 +151,5 @@ public class DataParser {
         return poly;
     }
 }
+
+

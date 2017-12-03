@@ -47,7 +47,7 @@ public class SplashActivity extends Activity implements StartupAuthResultHandler
 
         final IdentityManager identityManager = IdentityManager.getDefaultIdentityManager();
 
-        identityManager.doStartUpAuth(this, this);
+        identityManager.doStartupAuth(this, this);
 
     }
 

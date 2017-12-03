@@ -54,14 +54,16 @@ public class NavigationDrawer {
             public void syncState() {
                 super.syncState();
                 updateUserName(activity);
-                updateUserImage(activity);
+                // TODO user photo
+                //updateUserImage(activity);
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 updateUserName(activity);
-                updateUserImage(activity);
+                // TODO user photo
+               // updateUserImage(activity);
             }
         };
 
@@ -87,37 +89,36 @@ public class NavigationDrawer {
 
         if (identityProvider == null) {
             // Not signed in
-            userNameView.setText("Guest User");
+            userNameView.setText("Guest");
             userNameView.setBackgroundColor(activity.getResources().getColor(R.color.nav_drawer_no_user_background));
             return;
         }
 
         if (identityManager.isUserSignedIn()) {
-            userNameView.setText("Authenticated User");
+            userNameView.setText("Authenticated");
         }
     }
 
-    private void updateUserImage(final AppCompatActivity activity) {
 
-        final IdentityManager identityManager =
-                IdentityManager.getDefaultIdentityManager();
-        final IdentityProvider identityProvider =
-                identityManager.getCurrentIdentityProvider();
-
-        final ImageView imageView =
-                (ImageView) activity.findViewById(R.id.userImage);
-
-        if (identityProvider == null) {
-            // Not signed in
-            if (Build.VERSION.SDK_INT < 22) {
-                imageView.setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.mipmap.user));
-            } else {
-                imageView.setImageDrawable(activity.getDrawable(R.mipmap.user));
-            }
-
-            return;
-        }
-    }
+     // TODO for later implementation if we want to incorporate a photo (unnecessary)
+//    private void updateUserImage(final AppCompatActivity activity) {
+//
+//        final IdentityManager identityManager =
+//                IdentityManager.getDefaultIdentityManager();
+//        final IdentityProvider identityProvider =
+//                identityManager.getCurrentIdentityProvider();
+//
+//
+//        /
+//        if (identityProvider == null) {
+//            // Not signed in
+//            if (Build.VERSION.SDK_INT < 22) {
+//            } else {
+//            }
+//
+//            return;
+//        }
+//    }
 
 
     /**

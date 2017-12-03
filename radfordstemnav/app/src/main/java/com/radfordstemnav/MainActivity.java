@@ -15,7 +15,6 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -50,7 +49,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         PopularFragment.OnFragmentInteractionListener,
         MediaFragment.OnFragmentInteractionListener,
         RouteFragment.OnFragmentInteractionListener,
-        FavoritesFragment.OnFragmentInteractionListener {
+        FavoritesFragment.OnFragmentInteractionListener,
+        DirectionsFragment.OnFragmentInteractionListener
+{
 
 
     /**
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Initializes the Toolbar for use with the activity.
      */
     private void setupToolbar(final Bundle savedInstanceState) {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         // Set up the activity to use this toolbar. As a side effect this sets the Toolbar's title
         // to the activity's title.
         setSupportActionBar(toolbar);
@@ -110,10 +111,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void setupSignInButtons() {
 
-        signOutButton = (Button) findViewById(R.id.button_signout);
+        signOutButton = findViewById(R.id.button_signout);
         signOutButton.setOnClickListener(this);
 
-        signInButton = (Button) findViewById(R.id.button_signin);
+        signInButton = findViewById(R.id.button_signin);
         signInButton.setOnClickListener(this);
 
         final boolean isUserSignedIn = identityManager.isUserSignedIn();
@@ -127,17 +128,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * side of the screen.
      */
     private void setupNavigationMenu(final Bundle savedInstanceState) {
-        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        final ListView drawerItems = (ListView) findViewById(R.id.nav_drawer_items);
+        final DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        final ListView drawerItems = findViewById(R.id.nav_drawer_items);
 
         // Create the navigation drawer.
         navigationDrawer = new NavigationDrawer(this, toolbar, drawerLayout, drawerItems,
                 R.id.main_fragment_container);
 
-        // Add navigation drawer menu items.
-        // Home isn't a demo, but is fake as a demo.
-        //mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //mDrawerList = (ListView) findViewById(R.id.nav_drawer_items);
         String[] items = getResources().getStringArray(R.array.list_array);
 
         // Set the adapter for the list view
@@ -333,24 +330,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fragmentManager.popBackStack();
     }
 
-    /**
-     * Gets data to be passed between fragments.
-     *
-     * @return fragmentBundle fragment data
-     */
-    public Bundle getFragmentBundle() {
-        return this.fragmentBundle;
-    }
-
-    /**
-     * Stores data to be passed between fragments.
-     *
-     * @param fragmentBundle fragment data
-     */
-    public void setFragmentBundle(final Bundle fragmentBundle) {
-        this.fragmentBundle = fragmentBundle;
-    }
-
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -402,10 +381,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 return;
             }
-
             // Other permission requests can be added here. Such as permission to store locally
             // if we want to store saved locations.
-
         }
     }
 
@@ -415,5 +392,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             selectItem(position);
         }
     }
-
 }
