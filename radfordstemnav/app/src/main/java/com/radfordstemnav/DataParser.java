@@ -94,9 +94,8 @@ public class DataParser {
                             distance = "In " + ((JSONObject) ((JSONObject) jSteps.get(k)).get("distance")).getString("text");
                         if (((JSONObject) jSteps.get(k)).get("html_instructions") != null)
                             navig1 = ((JSONObject) jSteps.get(k)).getString("html_instructions");
-
-                        dir_path.add(navig1);
                         dir_path.add(distance);
+                        dir_path.add(navig1);
 
                     }
                 }
