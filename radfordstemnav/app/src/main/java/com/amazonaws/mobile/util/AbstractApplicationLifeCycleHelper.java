@@ -106,13 +106,6 @@ public abstract class AbstractApplicationLifeCycleHelper implements Application.
         }
     }
 
-    class ScreenOffReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            checkForApplicationEnteredBackground();
-        }
-    }
-
     /**
      * Called back when your application enters the Foreground.
      */
@@ -148,5 +141,12 @@ public abstract class AbstractApplicationLifeCycleHelper implements Application.
                 }
             }
         });
+    }
+
+    class ScreenOffReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            checkForApplicationEnteredBackground();
+        }
     }
 }

@@ -522,6 +522,7 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
             LocationsDO destination = new LocationsDO();
             RecentsFavoritesDO recentLocation = new RecentsFavoritesDO();
             destination.setCategory("test");
+            //destination.setCategory("events");
             destination.setName(mParam1);
 
             recentLocation.setCategory("recents");
@@ -548,7 +549,7 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
                     recentLocation.setLongitude(lng);
                     recentLocation.setName(mParam1);
                     // TTL of one week, then the item is removed from the database
-                    recentLocation.setTTL((int) (System.currentTimeMillis() / 1000L)+604800);
+                    recentLocation.setTTL((int) (System.currentTimeMillis() / 1000L) + 604800);
                     mapper.save(recentLocation);
 
                 }

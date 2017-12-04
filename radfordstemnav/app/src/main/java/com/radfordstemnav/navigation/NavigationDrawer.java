@@ -1,7 +1,5 @@
 package com.radfordstemnav.navigation;
 
-import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -9,7 +7,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -63,7 +60,7 @@ public class NavigationDrawer {
                 super.onDrawerOpened(drawerView);
                 updateUserName(activity);
                 // TODO user photo
-               // updateUserImage(activity);
+                // updateUserImage(activity);
             }
         };
 
@@ -100,7 +97,7 @@ public class NavigationDrawer {
     }
 
 
-     // TODO for later implementation if we want to incorporate a photo (unnecessary)
+    // TODO for later implementation if we want to incorporate a photo (unnecessary)
 //    private void updateUserImage(final AppCompatActivity activity) {
 //
 //        final IdentityManager identityManager =

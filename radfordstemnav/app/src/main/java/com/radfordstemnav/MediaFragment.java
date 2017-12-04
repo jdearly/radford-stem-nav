@@ -1,7 +1,6 @@
 package com.radfordstemnav;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -31,22 +30,22 @@ public class MediaFragment extends Fragment {
     }
 
     @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
-            View v=inflater.inflate(R.layout.fragment_media, container, false);
-            mWebView = v.findViewById(R.id.media_web);
-            mWebView.loadUrl("https://www.facebook.com/RadfordSTEMclub/");
+        View v = inflater.inflate(R.layout.fragment_media, container, false);
+        mWebView = v.findViewById(R.id.media_web);
+        mWebView.loadUrl("https://www.facebook.com/RadfordSTEMclub/");
 
-            // Enable Javascript
-            WebSettings webSettings = mWebView.getSettings();
-            webSettings.setJavaScriptEnabled(true);
+        // Enable Javascript
+        WebSettings webSettings = mWebView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
 
-            // Force links and redirects to open in the WebView instead of in a browser
-            mWebView.setWebViewClient(new WebViewClient());
+        // Force links and redirects to open in the WebView instead of in a browser
+        mWebView.setWebViewClient(new WebViewClient());
 
-            return v;
-        }
+        return v;
+    }
 
     @Override
     public void onAttach(Context context) {

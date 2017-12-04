@@ -1,7 +1,6 @@
 package com.radfordstemnav;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -98,8 +97,8 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (TimeoutException e) {
-           e.printStackTrace();
-            }
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -240,8 +239,10 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
             List<LocationsDO> location_list = mapper.query(LocationsDO.class, queryExpression);
 
             for (int i = 0; i < location_list.size(); i++) {
-                menu.add(location_list.get(i).getName());
-                System.out.println("ITEM ID: " + menu);
+                if (location_list.get(i).getType().equals("standard_location")) {
+                    menu.add(location_list.get(i).getName());
+                    System.out.println("ITEM ID: " + menu);
+                }
             }
             menu_items = menu;
             return menu;

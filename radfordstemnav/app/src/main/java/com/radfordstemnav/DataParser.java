@@ -88,20 +88,20 @@ public class DataParser {
 
                     /** Traversing all steps */
                     for (int k = 0; k < jSteps.length(); k++) {
-                            String navig1 = "";
-                            String distance = "";
-                            if ( ((JSONObject)((JSONObject)jSteps.get(k)).get("distance")).get("text") !=null)
-                                distance = ((JSONObject)((JSONObject)jSteps.get(k)).get("distance")).getString("text");
-                            if(  ((JSONObject) jSteps.get(k)).get("html_instructions") !=null)
-                                navig1 = ((JSONObject) jSteps.get(k)).getString("html_instructions");
+                        String navig1 = "";
+                        String distance = "";
+                        if (((JSONObject) ((JSONObject) jSteps.get(k)).get("distance")).get("text") != null)
+                            distance = "In " + ((JSONObject) ((JSONObject) jSteps.get(k)).get("distance")).getString("text");
+                        if (((JSONObject) jSteps.get(k)).get("html_instructions") != null)
+                            navig1 = ((JSONObject) jSteps.get(k)).getString("html_instructions");
 
-                            dir_path.add(navig1);
-                            dir_path.add(distance);
+                        dir_path.add(navig1);
+                        dir_path.add(distance);
 
                     }
-                    }
-                    dir_routes.add(dir_path);
                 }
+                dir_routes.add(dir_path);
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();

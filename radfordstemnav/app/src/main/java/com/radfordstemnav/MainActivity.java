@@ -47,11 +47,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         MapFragment.OnFragmentInteractionListener,
         RecentsFragment.OnFragmentInteractionListener,
         PopularFragment.OnFragmentInteractionListener,
+        EventsFragment.OnFragmentInteractionListener,
         MediaFragment.OnFragmentInteractionListener,
         RouteFragment.OnFragmentInteractionListener,
         FavoritesFragment.OnFragmentInteractionListener,
-        DirectionsFragment.OnFragmentInteractionListener
-{
+        DirectionsFragment.OnFragmentInteractionListener {
 
 
     /**
@@ -152,7 +152,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Swaps fragments in the main content view
      */
     private void selectItem(int position) {
-        // Create a new fragment and specify the planet to show based on position
         if (position == 0) {
             navigationDrawer.closeDrawer();
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -194,6 +193,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .commit();
         }
         if (position == 5) {
+            navigationDrawer.closeDrawer();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.main_fragment_container, new EventsFragment())
+                    .addToBackStack("")
+                    .commit();
+        }
+        if (position == 6) {
             navigationDrawer.closeDrawer();
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()

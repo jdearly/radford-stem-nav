@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -27,10 +26,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,20 +37,9 @@ import com.amazonaws.models.nosql.LocationsDO;
 import com.amazonaws.models.nosql.RecentsFavoritesDO;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONObject;
 
@@ -63,15 +47,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,13 +69,13 @@ public class DirectionsFragment extends Fragment implements LocationListener {
     LocationManager locationManager;
     LatLng dir_dest;
     Context context;
-    private String mParam1;
-    private GoogleMap mMap;
     ArrayList<String> directions = new ArrayList<>();
     TextView dir_textView;
     Adapter textViewAdapter;
     LatLng myGPSPosition;
     String str;
+    private String mParam1;
+    private GoogleMap mMap;
 
 
     public DirectionsFragment() {
@@ -134,6 +114,7 @@ public class DirectionsFragment extends Fragment implements LocationListener {
                     + " must implement OnFragmentInteractionListener");
         }
     }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -174,9 +155,9 @@ public class DirectionsFragment extends Fragment implements LocationListener {
             double longitude = locationGPS.getLongitude();
             myGPSPosition = new LatLng(latitude, longitude);
             generateRoute(myGPSPosition);
-        }catch (NullPointerException | IllegalArgumentException e){
+        } catch (NullPointerException | IllegalArgumentException e) {
             e.printStackTrace();
-            Toast.makeText(getActivity(),"Unable to get GPS data",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Unable to get GPS data", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -391,7 +372,7 @@ public class DirectionsFragment extends Fragment implements LocationListener {
                 // Fetching i-th route
                 ArrayList<String> dir_path = result.get(i);
 
-                for (int j = 0; j < dir_path.size(); j++){
+                for (int j = 0; j < dir_path.size(); j++) {
                     directions.add(dir_path.get(j));
                 }
             }
@@ -437,7 +418,7 @@ public class DirectionsFragment extends Fragment implements LocationListener {
                     recentLocation.setLongitude(lng);
                     recentLocation.setName(mParam1);
                     // TTL of one week, then the item is removed from the database
-                    recentLocation.setTTL((int) (System.currentTimeMillis() / 1000L)+604800);
+                    recentLocation.setTTL((int) (System.currentTimeMillis() / 1000L) + 604800);
                     mapper.save(recentLocation);
 
                 }
