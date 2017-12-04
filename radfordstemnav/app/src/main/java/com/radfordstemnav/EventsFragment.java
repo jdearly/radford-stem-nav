@@ -148,7 +148,7 @@ public class EventsFragment extends Fragment implements RouteFragment.OnFragment
                 RouteFragment routeFrag = new RouteFragment();
                 routeFrag.setArguments(routeArgs);
                 fragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left)
+                        .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
                         .replace(R.id.main_fragment_container, routeFrag)
                         .addToBackStack("")
                         .commit()
@@ -161,7 +161,7 @@ public class EventsFragment extends Fragment implements RouteFragment.OnFragment
                 DirectionsFragment dirFrag = new DirectionsFragment();
                 dirFrag.setArguments(dirArgs);
                 fragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left)
+                        .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
                         .replace(R.id.main_fragment_container, dirFrag)
                         .addToBackStack("")
                         .commit();
