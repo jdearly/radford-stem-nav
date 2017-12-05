@@ -65,6 +65,6 @@
         </activity>
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id" />
          <meta-data android:name="com.google.android.geo.API_KEY"
-                android:value="@string/google_maps_key" />
+                android:value="AIzaSyDb0s56tBr6Wf37fTGJsL71vpjIz2mtpY8" />
     </application>
 </manifest>

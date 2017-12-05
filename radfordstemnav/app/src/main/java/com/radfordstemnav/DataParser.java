@@ -5,6 +5,7 @@ package com.radfordstemnav;
  */
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -84,7 +85,12 @@ public class DataParser {
 
                 /** Traversing all legs */
                 for (int j = 0; j < jLegs.length(); j++) {
+                    String duration = "";
                     jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
+                    if (((JSONObject) ((JSONObject) jLegs.get(j)).get("duration")).get("text") != null)
+                        duration = "Trip duration: " + ((JSONObject) ((JSONObject) jSteps.get(j)).get("duration")).getString("text");
+                        dir_path.add(duration);
+                        dir_path.add("");
 
                     /** Traversing all steps */
                     for (int k = 0; k < jSteps.length(); k++) {
