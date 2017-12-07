@@ -12,10 +12,10 @@
             android:id="@+id/dir_textView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="start"
             android:lineSpacingExtra="8sp"
             android:text="Failed to gather location information to load directions."
             android:textAlignment="textStart"
-            android:layout_gravity="start"
             android:textSize="24sp" />
     </ScrollView>
 

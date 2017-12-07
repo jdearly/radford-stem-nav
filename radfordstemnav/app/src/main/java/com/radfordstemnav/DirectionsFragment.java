@@ -197,7 +197,7 @@ public class DirectionsFragment extends Fragment implements LocationListener {
         // Building the url to Google Directions web service using our own API key
         // Google "free" usage is 2,500 requests per day
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters
-                     + "&key=AIzaSyDb0s56tBr6Wf37fTGJsL71vpjIz2mtpY8";
+                + "&key=AIzaSyDb0s56tBr6Wf37fTGJsL71vpjIz2mtpY8";
         return url;
     }
 
@@ -246,6 +246,7 @@ public class DirectionsFragment extends Fragment implements LocationListener {
 
     /**
      * Ultimately unused for directions
+     *
      * @param location
      */
     @Override
@@ -382,6 +383,7 @@ public class DirectionsFragment extends Fragment implements LocationListener {
 
         /**
          * Executes in UI thread
+         *
          * @param result
          */
         @Override

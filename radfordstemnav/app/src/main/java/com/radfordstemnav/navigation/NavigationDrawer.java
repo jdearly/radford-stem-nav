@@ -23,9 +23,9 @@ public class NavigationDrawer {
     /**
      * Constructs the Navigation Drawer.
      *
-     * @param activity             the activity that will contain this navigation drawer.
-     * @param toolbar              the toolbar the activity is using.
-     * @param layout               the DrawerLayout for this navigation drawer.
+     * @param activity the activity that will contain this navigation drawer.
+     * @param toolbar  the toolbar the activity is using.
+     * @param layout   the DrawerLayout for this navigation drawer.
      */
     public NavigationDrawer(final AppCompatActivity activity,
                             final Toolbar toolbar,

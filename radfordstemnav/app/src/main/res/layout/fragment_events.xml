@@ -5,8 +5,8 @@
     tools:context="com.radfordstemnav.EventsFragment">
 
     <ListView
+        android:id="@+id/eventsMenu"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/eventsMenu"/>
+        android:layout_height="match_parent" />
 
 </FrameLayout>

@@ -219,8 +219,7 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
     }
 
     /**
-     * @param current
-     * Starts call to generate the URL
+     * @param current Starts call to generate the URL
      */
     public void generateRoute(LatLng current) {
 
@@ -248,7 +247,7 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         // Building the url to Google Directions web service using our own API key
         // Google "free" usage is 2,500 requests per day
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters
-                    + "&key=AIzaSyDb0s56tBr6Wf37fTGJsL71vpjIz2mtpY8";
+                + "&key=AIzaSyDb0s56tBr6Wf37fTGJsL71vpjIz2mtpY8";
         return url;
     }
 
@@ -317,6 +316,7 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
 
     /**
      * Unused
+     *
      * @param i
      */
     @Override
@@ -326,6 +326,7 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
 
     /**
      * Tracks user location and updates @param mLastLocation
+     *
      * @param location
      */
     @Override

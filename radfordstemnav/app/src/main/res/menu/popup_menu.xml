@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/route"
+    <item
+        android:id="@+id/route"
         android:title="SHOW ROUTE" />
-    <item android:id="@+id/directions"
+    <item
+        android:id="@+id/directions"
         android:title="DIRECTIONS" />
-    <item android:id="@+id/save"
+    <item
+        android:id="@+id/save"
         android:title="SAVE FAVORITE" />
 </menu>

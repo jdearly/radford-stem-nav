@@ -34,7 +34,6 @@ import java.util.concurrent.TimeoutException;
  * Activities that contain this fragment must implement the
  * {@link RecentsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
-
  */
 public class RecentsFragment extends Fragment implements RouteFragment.OnFragmentInteractionListener {
 

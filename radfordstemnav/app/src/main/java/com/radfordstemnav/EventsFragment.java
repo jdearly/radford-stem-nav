@@ -135,6 +135,7 @@ public class EventsFragment extends Fragment implements RouteFragment.OnFragment
 
     /**
      * Context menu for choosing to route, get directions, or save the location.
+     *
      * @param menu
      * @param v
      * @param menuInfo

@@ -44,13 +44,11 @@ import java.util.concurrent.TimeoutException;
  */
 public class HomeFragment extends Fragment implements RouteFragment.OnFragmentInteractionListener {
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     ArrayList<String> menu_items;
     ListView listView;
     ArrayAdapter<String> listViewAdapter;
     Context context;
-    private OnFragmentInteractionListener homeListener;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -77,12 +75,6 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            homeListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     /**
@@ -91,9 +83,6 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            String mParam1 = getArguments().getString(ARG_PARAM1);
-        }
         context = getActivity().getApplicationContext();
 
         try {
@@ -221,7 +210,6 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
     @Override
     public void onDetach() {
         super.onDetach();
-        homeListener = null;
     }
 
 
@@ -262,7 +250,6 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
             for (int i = 0; i < location_list.size(); i++) {
                 if (location_list.get(i).getType().equals("standard_location")) {
                     menu.add(location_list.get(i).getName());
-                    System.out.println("ITEM ID: " + menu);
                 }
             }
             menu_items = menu;

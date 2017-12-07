@@ -14,6 +14,7 @@ public class DataParser {
 
     /**
      * Parses the JSONObject to obtain the necessary data to generate a route.
+     *
      * @param jObject
      * @return the routes in a simple List<List<HashMap<String, String>>>
      */
@@ -65,9 +66,10 @@ public class DataParser {
     }
 
     /**
-     *  The following applies the same strategy as the the parse above, just collects direction data.
-     *  The two could possibly be combined to collect all the data at once, but the separation saves
-     *  memory if the one or the other is never used.
+     * The following applies the same strategy as the the parse above, just collects direction data.
+     * The two could possibly be combined to collect all the data at once, but the separation saves
+     * memory if the one or the other is never used.
+     *
      * @param jObject
      * @return the route directions details in a List<ArrayList<String>>
      */
@@ -93,8 +95,8 @@ public class DataParser {
                     jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
                     if (((JSONObject) ((JSONObject) jLegs.get(j)).get("duration")).get("text") != null)
                         duration = "Trip duration: " + ((JSONObject) ((JSONObject) jSteps.get(j)).get("duration")).getString("text");
-                        dir_path.add(duration);
-                        dir_path.add("");
+                    dir_path.add(duration);
+                    dir_path.add("");
 
                     // All steps
                     for (int k = 0; k < jSteps.length(); k++) {
@@ -124,7 +126,7 @@ public class DataParser {
     /**
      * The following code was borrowed from a much more knowledgeable developer. Credit link provided.
      * http://jeffreysambells.com/2010/05/27/decoding-polylines-from-google-maps-direction-api-with-java
-     *
+     * <p>
      * Seems to be the most common method for handling drawing poly-lines once the points are obtained.
      */
     private List<LatLng> decodePoly(String encoded) {

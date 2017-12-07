@@ -240,7 +240,6 @@ public class PopularFragment extends Fragment implements RouteFragment.OnFragmen
     }
 
 
-
     private class favDB extends AsyncTask<String, String, String> {
 
         /**

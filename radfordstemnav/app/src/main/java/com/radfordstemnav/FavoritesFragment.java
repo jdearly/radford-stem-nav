@@ -118,6 +118,7 @@ public class FavoritesFragment extends Fragment implements RouteFragment.OnFragm
 
     /**
      * Generates the context menu for user selection.
+     *
      * @param item
      * @return
      */

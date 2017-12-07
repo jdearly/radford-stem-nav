@@ -34,6 +34,7 @@ public class MediaFragment extends Fragment {
 
     /**
      * Just makes a call to the given URL to display in the application
+     *
      * @param inflater
      * @param container
      * @param savedInstanceState

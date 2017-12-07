@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Initializes the toolbar
+     *
      * @param savedInstanceState
      */
     private void setupToolbar(final Bundle savedInstanceState) {
@@ -134,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Swaps fragments in the main content view
+     *
      * @param position
      */
     private void selectItem(int position) {

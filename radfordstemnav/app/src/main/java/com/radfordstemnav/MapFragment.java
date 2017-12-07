@@ -40,7 +40,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -241,6 +240,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
     /**
      * Unused - TODO
+     *
      * @param i
      */
     @Override
@@ -250,6 +250,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
     /**
      * Tracks users location on the map
+     *
      * @param location
      */
     @Override
