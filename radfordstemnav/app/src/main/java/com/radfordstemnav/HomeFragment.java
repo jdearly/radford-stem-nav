@@ -55,21 +55,6 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @return A new instance of fragment HomeFragment.
-     */
-    public static HomeFragment newInstance(String param1) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    /**
      * @param context
      */
     @Override
