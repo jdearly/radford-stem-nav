@@ -34,46 +34,24 @@ import java.util.concurrent.TimeoutException;
  * Activities that contain this fragment must implement the
  * {@link RecentsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link RecentsFragment#newInstance} factory method to
- * create an instance of this fragment.
+
  */
 public class RecentsFragment extends Fragment implements RouteFragment.OnFragmentInteractionListener {
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
     ArrayList<String> menu_items;
     ListView listView;
     Context context;
-    private OnFragmentInteractionListener homeListener;
 
     public RecentsFragment() {
         // Required empty public constructor
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @return A new instance of fragment RecentsFragment.
+     * @param context
      */
-    public static RecentsFragment newInstance(String param1) {
-        RecentsFragment fragment = new RecentsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            homeListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
@@ -81,6 +59,12 @@ public class RecentsFragment extends Fragment implements RouteFragment.OnFragmen
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return the generated view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -96,7 +80,7 @@ public class RecentsFragment extends Fragment implements RouteFragment.OnFragmen
             e.printStackTrace();
         }
 
-        listView = (ListView) view.findViewById(R.id.recentMenu);
+        listView = view.findViewById(R.id.recentMenu);
 
         System.out.println("MENU ITEM SIZE: " + menu_items.size());
         ArrayAdapter<String> listViewAdapter = new ArrayAdapter<>(
@@ -114,6 +98,11 @@ public class RecentsFragment extends Fragment implements RouteFragment.OnFragmen
         return view;
     }
 
+    /**
+     * @param menu
+     * @param v
+     * @param menuInfo
+     */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
@@ -122,6 +111,10 @@ public class RecentsFragment extends Fragment implements RouteFragment.OnFragmen
         inflater.inflate(R.menu.popup_menu, menu);
     }
 
+    /**
+     * @param item
+     * @return the item that is selected. Either route, direction, favorite
+     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -166,7 +159,6 @@ public class RecentsFragment extends Fragment implements RouteFragment.OnFragmen
     @Override
     public void onDetach() {
         super.onDetach();
-        homeListener = null;
     }
 
 
@@ -175,10 +167,6 @@ public class RecentsFragment extends Fragment implements RouteFragment.OnFragmen
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
         // required
@@ -186,6 +174,10 @@ public class RecentsFragment extends Fragment implements RouteFragment.OnFragmen
 
 
     private class db extends AsyncTask<ArrayList, ArrayList, ArrayList> {
+        /**
+         * @param params
+         * @return all items with type "recents"
+         */
         @Override
         protected ArrayList doInBackground(ArrayList... params) {
 
@@ -220,6 +212,9 @@ public class RecentsFragment extends Fragment implements RouteFragment.OnFragmen
         protected void onPreExecute() {
         }
 
+        /**
+         * @param params
+         */
         @Override
         protected void onPostExecute(ArrayList params) {
         }

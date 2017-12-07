@@ -1,11 +1,6 @@
 package com.radfordstemnav;
 
-/**
- * Created by josh on 11/25/17.
- */
-
 import com.google.android.gms.maps.model.LatLng;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,7 +13,9 @@ import java.util.List;
 public class DataParser {
 
     /**
-     * Receives a JSONObject and returns a list of lists containing latitude and longitude
+     * Parses the JSONObject to obtain the necessary data to generate a route.
+     * @param jObject
+     * @return the routes in a simple List<List<HashMap<String, String>>>
      */
     public List<List<HashMap<String, String>>> parse(JSONObject jObject) {
 
@@ -31,22 +28,22 @@ public class DataParser {
 
             jRoutes = jObject.getJSONArray("routes");
 
-            /** Traversing all routes */
+            // All routes
             for (int i = 0; i < jRoutes.length(); i++) {
                 jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
                 List path = new ArrayList<>();
 
-                /** Traversing all legs */
+                // All legs
                 for (int j = 0; j < jLegs.length(); j++) {
                     jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
 
-                    /** Traversing all steps */
+                    // All steps
                     for (int k = 0; k < jSteps.length(); k++) {
                         String polyline = "";
                         polyline = (String) ((JSONObject) ((JSONObject) jSteps.get(k)).get("polyline")).get("points");
                         List<LatLng> list = decodePoly(polyline);
 
-                        /** Traversing all points */
+                        // All points
                         for (int l = 0; l < list.size(); l++) {
                             HashMap<String, String> hm = new HashMap<>();
                             hm.put("lat", Double.toString((list.get(l)).latitude));
@@ -67,6 +64,13 @@ public class DataParser {
         return routes;
     }
 
+    /**
+     *  The following applies the same strategy as the the parse above, just collects direction data.
+     *  The two could possibly be combined to collect all the data at once, but the separation saves
+     *  memory if the one or the other is never used.
+     * @param jObject
+     * @return the route directions details in a List<ArrayList<String>>
+     */
     public List<ArrayList<String>> parseDirections(JSONObject jObject) {
 
         List<ArrayList<String>> dir_routes = new ArrayList<>();
@@ -78,12 +82,12 @@ public class DataParser {
 
             jRoutes = jObject.getJSONArray("routes");
 
-            /** Traversing all routes */
+            // All routes
             for (int i = 0; i < jRoutes.length(); i++) {
                 jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
                 ArrayList dir_path = new ArrayList<>();
 
-                /** Traversing all legs */
+                // All legs
                 for (int j = 0; j < jLegs.length(); j++) {
                     String duration = "";
                     jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
@@ -92,7 +96,7 @@ public class DataParser {
                         dir_path.add(duration);
                         dir_path.add("");
 
-                    /** Traversing all steps */
+                    // All steps
                     for (int k = 0; k < jSteps.length(); k++) {
                         String navig1 = "";
                         String distance = "";
@@ -113,14 +117,15 @@ public class DataParser {
         } catch (Exception e) {
         }
 
-
         return dir_routes;
     }
 
 
     /**
-     * Method to decode polyline points
-     * Courtesy : http://jeffreysambells.com/2010/05/27/decoding-polylines-from-google-maps-direction-api-with-java
+     * The following code was borrowed from a much more knowledgeable developer. Credit link provided.
+     * http://jeffreysambells.com/2010/05/27/decoding-polylines-from-google-maps-direction-api-with-java
+     *
+     * Seems to be the most common method for handling drawing poly-lines once the points are obtained.
      */
     private List<LatLng> decodePoly(String encoded) {
 

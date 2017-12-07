@@ -4,6 +4,7 @@ public final class StringFormatUtils {
 
     /**
      * This utility class is not constructable.
+     * Perhaps unnecessary..
      */
     private StringFormatUtils() {
     }

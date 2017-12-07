@@ -71,6 +71,9 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
         return fragment;
     }
 
+    /**
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -82,6 +85,9 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
         }
     }
 
+    /**
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,6 +107,12 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
         }
     }
 
+    /**
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return the generated view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -134,7 +146,6 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
             }
         });
 
-
         registerForContextMenu(listView);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
 
@@ -144,10 +155,14 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
                 view.showContextMenu();
             }
         });
-
         return view;
     }
 
+    /**
+     * @param menu
+     * @param v
+     * @param menuInfo
+     */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
@@ -156,6 +171,10 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
         inflater.inflate(R.menu.popup_menu, menu);
     }
 
+    /**
+     * @param item
+     * @return
+     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -198,6 +217,7 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
         }
     }
 
+
     @Override
     public void onDetach() {
         super.onDetach();
@@ -210,16 +230,15 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
         // required
     }
 
 
+    /**
+     * Returns the menu items pulled from the DynamoDB locations table to fill the main screen
+     */
     private class db extends AsyncTask<ArrayList, ArrayList, ArrayList> {
         @Override
         protected ArrayList doInBackground(ArrayList... params) {
@@ -255,12 +274,18 @@ public class HomeFragment extends Fragment implements RouteFragment.OnFragmentIn
         protected void onPreExecute() {
         }
 
+        /**
+         * @param params
+         */
         @Override
         protected void onPostExecute(ArrayList params) {
         }
     }
 
 
+    /**
+     * Saves to the favorites table
+     */
     private class favDB extends AsyncTask<String, String, String> {
 
         @Override

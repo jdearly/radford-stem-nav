@@ -36,6 +36,9 @@ public class SplashActivity extends Activity implements StartupAuthResultHandler
 
     private static final String LOG_TAG = SplashActivity.class.getSimpleName();
 
+    /**
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(LOG_TAG, "onCreate");
@@ -49,6 +52,10 @@ public class SplashActivity extends Activity implements StartupAuthResultHandler
 
     }
 
+    /**
+     * @param event
+     * @return true if user interrupts the splash screen
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         // Touch event bypasses waiting for the splash timeout to expire.
@@ -56,6 +63,9 @@ public class SplashActivity extends Activity implements StartupAuthResultHandler
         return true;
     }
 
+    /**
+     * @param authResult
+     */
     @Override
     public void onComplete(StartupAuthResult authResult) {
         final IdentityManager identityManager = authResult.getIdentityManager();
@@ -107,7 +117,9 @@ public class SplashActivity extends Activity implements StartupAuthResultHandler
         }
     }
 
-    // Checks to verify that the user has a network connecton to make the request for the route
+    /**
+     * @return true if user has network connection on app startup
+     */
     public boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager)
                 this.getSystemService(Context.CONNECTIVITY_SERVICE);

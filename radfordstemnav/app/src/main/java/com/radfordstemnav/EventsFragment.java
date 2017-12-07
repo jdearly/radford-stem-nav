@@ -42,13 +42,11 @@ import java.util.concurrent.TimeoutException;
  */
 public class EventsFragment extends Fragment implements RouteFragment.OnFragmentInteractionListener {
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     ArrayList<String> menu_items;
     ListView listView;
     ArrayAdapter<String> listViewAdapter;
     Context context;
-    private OnFragmentInteractionListener homeListener;
 
     public EventsFragment() {
         // Required empty public constructor
@@ -69,23 +67,25 @@ public class EventsFragment extends Fragment implements RouteFragment.OnFragment
         return fragment;
     }
 
+    /**
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
-            homeListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
     }
 
+    /**
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            String mParam1 = getArguments().getString(ARG_PARAM1);
-        }
         context = getActivity().getApplicationContext();
 
         try {
@@ -99,6 +99,12 @@ public class EventsFragment extends Fragment implements RouteFragment.OnFragment
         }
     }
 
+    /**
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return the generated view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -113,7 +119,6 @@ public class EventsFragment extends Fragment implements RouteFragment.OnFragment
 
         listView.setAdapter(listViewAdapter);
 
-
         registerForContextMenu(listView);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
 
@@ -127,6 +132,13 @@ public class EventsFragment extends Fragment implements RouteFragment.OnFragment
         return view;
     }
 
+
+    /**
+     * Context menu for choosing to route, get directions, or save the location.
+     * @param menu
+     * @param v
+     * @param menuInfo
+     */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
@@ -135,6 +147,10 @@ public class EventsFragment extends Fragment implements RouteFragment.OnFragment
         inflater.inflate(R.menu.popup_menu, menu);
     }
 
+    /**
+     * @param item
+     * @return true on the selected case
+     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -180,25 +196,16 @@ public class EventsFragment extends Fragment implements RouteFragment.OnFragment
     @Override
     public void onDetach() {
         super.onDetach();
-        homeListener = null;
     }
 
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+    // For activities to make any calls to this fragment
     public interface OnFragmentInteractionListener {
         // required
     }
 
-
+    /**
+     * AsyncTask to make calls to out tables, pull the appropriate data and return in an ArrayList
+     */
     private class db extends AsyncTask<ArrayList, ArrayList, ArrayList> {
         @Override
         protected ArrayList doInBackground(ArrayList... params) {
@@ -234,14 +241,20 @@ public class EventsFragment extends Fragment implements RouteFragment.OnFragment
         protected void onPreExecute() {
         }
 
+        /**
+         * @param params
+         */
         @Override
         protected void onPostExecute(ArrayList params) {
         }
     }
 
 
+    /**
+     * The following makes the appropriate calls to the tables to save a selected location
+     * to the favorites category.
+     */
     private class favDB extends AsyncTask<String, String, String> {
-
         @Override
         protected String doInBackground(String... strings) {
             String location = strings[0];

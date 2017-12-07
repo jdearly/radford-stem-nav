@@ -13,15 +13,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -53,12 +50,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FavoritesFragment.OnFragmentInteractionListener,
         DirectionsFragment.OnFragmentInteractionListener {
 
-
-    /**
-     * Class name for log messages.
-     */
-    private static final String LOG_TAG = MainActivity.class.getSimpleName();
-
     /**
      * Bundle key for saving/restoring the toolbar title.
      */
@@ -76,19 +67,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Our navigation drawer class for handling navigation drawer logic.
      */
     private NavigationDrawer navigationDrawer;
-    /**
-     * The helper class used to toggle the left navigation drawer open and closed.
-     */
-    private ActionBarDrawerToggle drawerToggle;
+
     /**
      * Data to be passed between fragments.
      */
-    private Bundle fragmentBundle;
     private Button signOutButton;
     private Button signInButton;
 
+
     /**
-     * Initializes the Toolbar for use with the activity.
+     * Initializes the toolbar
+     * @param savedInstanceState
      */
     private void setupToolbar(final Bundle savedInstanceState) {
         toolbar = findViewById(R.id.toolbar);
@@ -97,14 +86,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setSupportActionBar(toolbar);
 
         if (savedInstanceState != null) {
-            // Some IDEs such as Android Studio complain about possible NPE without this check.
             assert getSupportActionBar() != null;
-
-            // Restore the Toolbar's title.
             getSupportActionBar().setTitle(
                     savedInstanceState.getCharSequence(BUNDLE_KEY_TOOLBAR_TITLE));
         }
     }
+
 
     /**
      * Initializes the sign-in and sign-out buttons.
@@ -132,8 +119,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final ListView drawerItems = findViewById(R.id.nav_drawer_items);
 
         // Create the navigation drawer.
-        navigationDrawer = new NavigationDrawer(this, toolbar, drawerLayout, drawerItems,
-                R.id.main_fragment_container);
+        navigationDrawer = new NavigationDrawer(this, toolbar, drawerLayout
+        );
 
         String[] items = getResources().getStringArray(R.array.list_array);
 
@@ -142,14 +129,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 android.R.layout.simple_selectable_list_item, items));
 
         drawerItems.setOnItemClickListener(new DrawerItemClickListener());
-
-        if (savedInstanceState == null) {
-            // Add the home fragment to be displayed initially.
-        }
     }
+
 
     /**
      * Swaps fragments in the main content view
+     * @param position
      */
     private void selectItem(int position) {
         if (position == 0) {
@@ -217,19 +202,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    //@Override
-//    public void setTitle(CharSequence title) {
-//        mTitle = title;
-//        getActionBar().setTitle(mTitle);
-//    }
-    // Checks to verify that the user has a network connecton to make the request for the route
-    public boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager)
-                this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
 
+    /**
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -251,6 +227,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    /**
+     * @param fragment
+     * @param context
+     */
     public void setFragment(Fragment fragment, Context context) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -266,6 +246,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setupSignInButtons();
     }
 
+    /**
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         // Handle action bar item clicks here excluding the home button.
@@ -273,6 +257,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * @param bundle
+     */
     @Override
     protected void onSaveInstanceState(final Bundle bundle) {
         super.onSaveInstanceState(bundle);
@@ -283,6 +270,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /**
+     * @param view
+     */
     @Override
     public void onClick(final View view) {
         if (view == signOutButton) {
@@ -303,6 +293,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             identityManager.setUpToAuthenticate(this, new DefaultSignInResultHandler() {
 
+                /**
+                 * @param activity
+                 * @param identityProvider
+                 */
                 @Override
                 public void onSuccess(Activity activity, IdentityProvider identityProvider) {
                     // User has signed in
@@ -310,6 +304,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     activity.finish();
                 }
 
+                /**
+                 * @param activity
+                 * @return
+                 */
                 @Override
                 public boolean onCancel(Activity activity) {
                     return true;
@@ -332,6 +330,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onPause();
     }
 
+    /**
+     * Pops the latest fragment from the stack
+     */
     @Override
     public void onBackPressed() {
         final FragmentManager fragmentManager = this.getSupportFragmentManager();
@@ -344,6 +345,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         fragmentManager.popBackStack();
     }
+
 
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -379,6 +381,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /**
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -402,6 +409,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        /**
+         * @param parent
+         * @param view
+         * @param position
+         * @param id
+         */
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             selectItem(position);

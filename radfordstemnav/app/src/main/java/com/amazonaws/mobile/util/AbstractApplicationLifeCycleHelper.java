@@ -14,7 +14,7 @@ import android.util.Log;
 import java.util.WeakHashMap;
 
 /**
- * Aids in determining when your application has entered or left the foreground.
+ * Aids in determining when the application has entered or left the foreground.
  * The constructor registers to receive Activity lifecycle events and also registers a
  * broadcast receiver to handle the screen being turned off.  Abstract methods are
  * provided to handle when the application enters the background or foreground.
@@ -94,7 +94,7 @@ public abstract class AbstractApplicationLifeCycleHelper implements Application.
     }
 
     /**
-     * Call this method when your Application trims memory.
+     * Call this method when the Application trims memory.
      *
      * @param level the level passed through from Application.onTrimMemory().
      */
@@ -107,12 +107,12 @@ public abstract class AbstractApplicationLifeCycleHelper implements Application.
     }
 
     /**
-     * Called back when your application enters the Foreground.
+     * Called back when the application enters the Foreground.
      */
     protected abstract void applicationEnteredForeground();
 
     /**
-     * Called back when your application enters the Background.
+     * Called back when the application enters the Background.
      */
     protected abstract void applicationEnteredBackground();
 

@@ -42,45 +42,32 @@ import java.util.concurrent.TimeoutException;
  */
 public class PopularFragment extends Fragment implements RouteFragment.OnFragmentInteractionListener {
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
     ArrayList<String> menu_items;
     ListView listView;
     ArrayAdapter<String> listViewAdapter;
     Context context;
-    private OnFragmentInteractionListener homeListener;
 
     public PopularFragment() {
         // Required empty public constructor
     }
 
+
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment HomeFragment.
+     * @param context
      */
-
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            homeListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
+    /**
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            String mParam1 = getArguments().getString(ARG_PARAM1);
-        }
         context = getActivity().getApplicationContext();
-
+        // makes call to database task
         try {
             new db().execute().get(5000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
@@ -92,6 +79,12 @@ public class PopularFragment extends Fragment implements RouteFragment.OnFragmen
         }
     }
 
+    /**
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return the generated view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -120,6 +113,11 @@ public class PopularFragment extends Fragment implements RouteFragment.OnFragmen
         return view;
     }
 
+    /**
+     * @param menu
+     * @param v
+     * @param menuInfo
+     */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
@@ -128,6 +126,10 @@ public class PopularFragment extends Fragment implements RouteFragment.OnFragmen
         inflater.inflate(R.menu.popup_menu, menu);
     }
 
+    /**
+     * @param item
+     * @return
+     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -173,7 +175,6 @@ public class PopularFragment extends Fragment implements RouteFragment.OnFragmen
     @Override
     public void onDetach() {
         super.onDetach();
-        homeListener = null;
     }
 
 
@@ -182,17 +183,20 @@ public class PopularFragment extends Fragment implements RouteFragment.OnFragmen
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
         // required
     }
 
 
+    /**
+     * Pulls items with type "popular" from the dynamoDB table
+     */
     private class db extends AsyncTask<ArrayList, ArrayList, ArrayList> {
+        /**
+         * @param params
+         * @return popular locations
+         */
         @Override
         protected ArrayList doInBackground(ArrayList... params) {
 
@@ -227,14 +231,23 @@ public class PopularFragment extends Fragment implements RouteFragment.OnFragmen
         protected void onPreExecute() {
         }
 
+        /**
+         * @param params
+         */
         @Override
         protected void onPostExecute(ArrayList params) {
         }
     }
 
 
+
     private class favDB extends AsyncTask<String, String, String> {
 
+        /**
+         * @param strings
+         * @return null
+         * Simply adds to recent/favorites table
+         */
         @Override
         protected String doInBackground(String... strings) {
             String location = strings[0];

@@ -7,7 +7,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.amazonaws.mobile.auth.core.IdentityManager;
@@ -27,25 +26,20 @@ public class NavigationDrawer {
      * @param activity             the activity that will contain this navigation drawer.
      * @param toolbar              the toolbar the activity is using.
      * @param layout               the DrawerLayout for this navigation drawer.
-     * @param drawerItemsContainer the parent view group for the navigation drawer items.
      */
     public NavigationDrawer(final AppCompatActivity activity,
                             final Toolbar toolbar,
-                            final DrawerLayout layout,
-                            final ListView drawerItemsContainer,
-                            final int fragmentContainerId) {
+                            final DrawerLayout layout) {
         // Keep a reference to the activity containing this navigation drawer.
-        AppCompatActivity containingActivity = activity;
         /* The view group that will contain the navigation drawer menu items. */
-        ListView drawerItems = drawerItemsContainer;
         this.drawerLayout = layout;
-        /* The id of the fragment container. */
-        int fragmentContainerId1 = fragmentContainerId;
+        // The id of the fragment container.
 
         // Create the navigation drawer toggle helper.
         /* The helper class used to toggle the left navigation drawer open and closed. */
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(activity, drawerLayout, toolbar,
                 app_name, app_name) {
+
 
             @Override
             public void syncState() {
@@ -68,7 +62,7 @@ public class NavigationDrawer {
         drawerLayout.addDrawerListener(drawerToggle);
 
         // Display the home button on the toolbar that will open the navigation drawer.
-        final ActionBar supportActionBar = containingActivity.getSupportActionBar();
+        final ActionBar supportActionBar = activity.getSupportActionBar();
         supportActionBar.setDisplayHomeAsUpEnabled(true);
         supportActionBar.setHomeButtonEnabled(true);
 
@@ -76,17 +70,20 @@ public class NavigationDrawer {
         drawerToggle.syncState();
     }
 
+    /**
+     * @param activity
+     */
     private void updateUserName(final AppCompatActivity activity) {
         final IdentityManager identityManager =
                 IdentityManager.getDefaultIdentityManager();
         final IdentityProvider identityProvider =
                 identityManager.getCurrentIdentityProvider();
 
-        final TextView userNameView = (TextView) activity.findViewById(R.id.userName);
+        final TextView userNameView = activity.findViewById(R.id.userName);
 
         if (identityProvider == null) {
             // Not signed in
-            userNameView.setText("Guest");
+            userNameView.setText("RU Guest");
             userNameView.setBackgroundColor(activity.getResources().getColor(R.color.nav_drawer_no_user_background));
             return;
         }

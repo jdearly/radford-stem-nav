@@ -25,7 +25,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +37,6 @@ import com.amazonaws.models.nosql.RecentsFavoritesDO;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONObject;
@@ -58,8 +56,6 @@ import java.util.concurrent.ExecutionException;
  * Activities that contain this fragment must implement the
  * {@link DirectionsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link DirectionsFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class DirectionsFragment extends Fragment implements LocationListener {
 
@@ -71,31 +67,27 @@ public class DirectionsFragment extends Fragment implements LocationListener {
     Context context;
     ArrayList<String> directions = new ArrayList<>();
     TextView dir_textView;
-    Adapter textViewAdapter;
     LatLng myGPSPosition;
     String str;
     private String mParam1;
-    private GoogleMap mMap;
 
 
     public DirectionsFragment() {
         // Required empty public constructor
     }
 
-
-    public static DirectionsFragment newInstance(String param1) {
-        DirectionsFragment fragment = new DirectionsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    /**
+     * @param current
+     */
     public void generateRoute(LatLng current) {
 
         String url = getUrl(current, dir_dest);
         FetchUrl FetchUrl = new FetchUrl();
+
         // Download JSON data from Google Directions API
+        // "execute(url).get() applies a wait thread that stops all other methods
+        // until the JSON data is retrieved. Testing has indicated that the response
+        // is consistently < 1-2 seconds even on poor connections.
         try {
             FetchUrl.execute(url).get();
         } catch (InterruptedException e) {
@@ -106,6 +98,9 @@ public class DirectionsFragment extends Fragment implements LocationListener {
 
     }
 
+    /**
+     * @param context
+     */
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof HomeFragment.OnFragmentInteractionListener) {
@@ -115,6 +110,12 @@ public class DirectionsFragment extends Fragment implements LocationListener {
         }
     }
 
+    /**
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -122,8 +123,13 @@ public class DirectionsFragment extends Fragment implements LocationListener {
         View view = inflater.inflate(R.layout.fragment_directions, container, false);
         dir_textView = view.findViewById(R.id.dir_textView);
         return view;
+
     }
 
+    /**
+     * @param savedInstanceState
+     */
+    // Specifications and initializations for when the fragment is created.
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -159,10 +165,14 @@ public class DirectionsFragment extends Fragment implements LocationListener {
             e.printStackTrace();
             Toast.makeText(getActivity(), "Unable to get GPS data", Toast.LENGTH_SHORT).show();
         }
+        // calling to verify the device is connected to a network
+        isOnline();
     }
 
 
-    // Checks to verify that the user has a network connecton to make the request for the route
+    /**
+     * @return true if the device is connected to a network
+     */
     public boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager)
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -171,28 +181,31 @@ public class DirectionsFragment extends Fragment implements LocationListener {
     }
 
 
+    /**
+     * @param origin
+     * @param dir_dest
+     * @return returns the string URL used to request data from the Google
+     */
     private String getUrl(LatLng origin, LatLng dir_dest) {
 
-        // Origin of route
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
-
-        // Destination of route
         String str_dest = "destination=" + dir_dest.latitude + "," + dir_dest.longitude;
-
         String str_mode = "mode=walking";
-
-        // Building the parameters to the web service
         String parameters = str_origin + "&" + str_dest + "&" + "&" + str_mode;
-
-        // Output format
         String output = "json";
 
-        // Building the url to Google Directions web service
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
+        // Building the url to Google Directions web service using our own API key
+        // Google "free" usage is 2,500 requests per day
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters
+                     + "&key=AIzaSyDb0s56tBr6Wf37fTGJsL71vpjIz2mtpY8";
         return url;
     }
 
-    // Download JSON data from the URL
+    /**
+     * @param strUrl
+     * @return returns the collected data form the URL
+     * @throws IOException
+     */
     private String downloadUrl(String strUrl) throws IOException {
         String data = "";
         InputStream iStream = null;
@@ -217,7 +230,6 @@ public class DirectionsFragment extends Fragment implements LocationListener {
             while ((line = br.readLine()) != null) {
                 sb.append(line);
             }
-
             data = sb.toString();
             Log.d("downloadUrl", data.toString());
             br.close();
@@ -232,11 +244,18 @@ public class DirectionsFragment extends Fragment implements LocationListener {
     }
 
 
+    /**
+     * Ultimately unused for directions
+     * @param location
+     */
     @Override
     public void onLocationChanged(Location location) {
 
     }
 
+    /**
+     * Same as permission check for routing
+     */
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -261,16 +280,15 @@ public class DirectionsFragment extends Fragment implements LocationListener {
                         .create()
                         .show();
 
-            } else {
-                // Request the permission on first-time startup and permissions have not yet been
-                // allowed or denied.
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION);
             }
         }
     }
 
+    /**
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -300,16 +318,16 @@ public class DirectionsFragment extends Fragment implements LocationListener {
     public interface OnFragmentInteractionListener {
     }
 
-    // Fetches data from url passed
+    /**
+     * Gets data from the URL request
+     */
     private class FetchUrl extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... url) {
 
-            // For storing data from web service
             String data = "";
             try {
-                // Fetching the data from web service
                 data = downloadUrl(url[0]);
                 Log.d("Background Task data", data.toString());
             } catch (Exception e) {
@@ -322,7 +340,7 @@ public class DirectionsFragment extends Fragment implements LocationListener {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             DirectionsFragment.ParserTask parserTask = new DirectionsFragment.ParserTask();
-            // Invokes the thread for parsing the JSON data
+            // Starts the thread for parsing the JSON
             try {
                 parserTask.execute(result).get();
             } catch (InterruptedException e) {
@@ -333,10 +351,11 @@ public class DirectionsFragment extends Fragment implements LocationListener {
         }
     }
 
-    // Parse the Google Places in JSON format
+    /**
+     * Parsing data in non-UI thread
+     */
     private class ParserTask extends AsyncTask<String, Integer, List<ArrayList<String>>> {
 
-        // Parsing the data in non-ui thread
         @Override
         protected List<ArrayList<String>> doInBackground(String... jsonData) {
 
@@ -361,8 +380,10 @@ public class DirectionsFragment extends Fragment implements LocationListener {
             return routes;
         }
 
-        // Executes in UI thread, after the parsing process
-        //@RequiresApi(api = Build.VERSION_CODES.O)
+        /**
+         * Executes in UI thread
+         * @param result
+         */
         @Override
         protected void onPostExecute(List<ArrayList<String>> result) {
 
@@ -381,6 +402,11 @@ public class DirectionsFragment extends Fragment implements LocationListener {
         }
     }
 
+    /**
+     * Gets data for the directions from DynamoDB
+     * Saves the location selection to recents
+     * Outside of UI thread
+     */
     private class database extends AsyncTask<LatLng, LatLng, LatLng> {
         @Override
         protected LatLng doInBackground(LatLng... params) {
@@ -388,7 +414,7 @@ public class DirectionsFragment extends Fragment implements LocationListener {
             CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
                     context,    /* get the context for the application */
                     "us-east-1:843f215d-5abf-42e6-96a0-b64dd0b333b0",    /* Identity Pool ID */
-                    Regions.US_EAST_1           /* Region for your identity pool--US_EAST_1 or EU_WEST_1*/
+                    Regions.US_EAST_1           /* Region for identity pool*/
             );
             AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentialsProvider);
             DynamoDBMapper mapper = new DynamoDBMapper(ddbClient);
@@ -426,12 +452,17 @@ public class DirectionsFragment extends Fragment implements LocationListener {
             return dir_dest;
         }
 
+
         @Override
         protected void onPreExecute() {
         }
 
+        /**
+         * @param params
+         */
         @Override
         protected void onPostExecute(LatLng params) {
+            // required. Returns dir_dest from AsyncTask - database
         }
     }
 

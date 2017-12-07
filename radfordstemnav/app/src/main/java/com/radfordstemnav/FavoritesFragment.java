@@ -34,57 +34,42 @@ import java.util.concurrent.TimeoutException;
  * Activities that contain this fragment must implement the
  * {@link FavoritesFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link FavoritesFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class FavoritesFragment extends Fragment implements RouteFragment.OnFragmentInteractionListener {
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
     ArrayList<String> fav_menu_items;
     ListView listView;
     Context context;
-    private OnFragmentInteractionListener homeListener;
 
     public FavoritesFragment() {
         // Required empty public constructor
     }
 
+
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @return A new instance of fragment FavoritesFragment.
+     * @param context
      */
-
-    public static FavoritesFragment newInstance(String param1) {
-        FavoritesFragment fragment = new FavoritesFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            homeListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
+    /**
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            String mParam1 = getArguments().getString(ARG_PARAM1);
         }
     }
 
+    /**
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -118,6 +103,11 @@ public class FavoritesFragment extends Fragment implements RouteFragment.OnFragm
         return view;
     }
 
+    /**
+     * @param menu
+     * @param v
+     * @param menuInfo
+     */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
@@ -126,6 +116,11 @@ public class FavoritesFragment extends Fragment implements RouteFragment.OnFragm
         inflater.inflate(R.menu.popup_menu, menu);
     }
 
+    /**
+     * Generates the context menu for user selection.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -167,10 +162,10 @@ public class FavoritesFragment extends Fragment implements RouteFragment.OnFragm
         }
     }
 
+
     @Override
     public void onDetach() {
         super.onDetach();
-        homeListener = null;
     }
 
     /**
@@ -178,16 +173,15 @@ public class FavoritesFragment extends Fragment implements RouteFragment.OnFragm
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
         // required
     }
 
 
+    /**
+     * Connects to DynamoDB table and adds the selection to the favorites category.
+     */
     private class fav_list extends AsyncTask<ArrayList, ArrayList, ArrayList> {
         @Override
         protected ArrayList doInBackground(ArrayList... params) {
@@ -222,6 +216,9 @@ public class FavoritesFragment extends Fragment implements RouteFragment.OnFragm
         protected void onPreExecute() {
         }
 
+        /**
+         * @param params
+         */
         @Override
         protected void onPostExecute(ArrayList params) {
         }

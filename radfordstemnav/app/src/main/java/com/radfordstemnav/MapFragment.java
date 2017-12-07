@@ -59,10 +59,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         LocationListener {
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private static final String ARG_PARAM1 = "selection";
-    // Dialog creation to allow the user to select the map type
     private static final CharSequence[] MAP_TYPE_ITEMS =
             {"Road Map", "Hybrid", "Satellite", "Terrain"};
-    public HashMap<String, LatLng> campus_locations = new HashMap<>();
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Marker mCurrLocationMarker;
@@ -72,20 +70,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     Context context;
     private String mParam1;
     private GoogleMap mapMap;
-    private OnFragmentInteractionListener mapListener;
 
     public MapFragment() {
         // Required empty public constructor
     }
 
-    public static MapFragment newInstance(String param1) {
-        MapFragment fragment = new MapFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
+    /**
+     * @param context
+     */
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof HomeFragment.OnFragmentInteractionListener) {
@@ -96,6 +89,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
+    /**
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +103,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
+    /**
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return the generated view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -116,6 +118,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         mapFrag.getMapAsync(this);
         return view;
     }
+
 
     private void showMapTypeSelectorDialog() {
         // Prepare the dialog by setting up a Builder.
@@ -157,7 +160,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         fMapTypeDialog.show();
     }
 
-    // Checks to verify that the user has a network connecton to make the request for the route
+
+    /**
+     * @return true if the users device is connected to a network
+     */
     public boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager)
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -165,6 +171,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
+    /**
+     * @param googleMap
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mapMap = googleMap;
@@ -212,6 +221,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         mGoogleApiClient.connect();
     }
 
+    /**
+     * @param bundle
+     */
     @Override
     public void onConnected(Bundle bundle) {
 
@@ -227,11 +239,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
+    /**
+     * Unused - TODO
+     * @param i
+     */
     @Override
     public void onConnectionSuspended(int i) {
 
     }
 
+    /**
+     * Tracks users location on the map
+     * @param location
+     */
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
@@ -252,20 +272,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     .show();
         }
 
-        // Place user's current location marker
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        // Generates a new route as the user moves
-        //CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(latLng);
-        //mapMap.animateCamera(cameraUpdate);
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
     }
 
+    /**
+     * @param connectionResult
+     */
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         // TODO
     }
+
 
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -301,6 +320,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
+    /**
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -339,6 +363,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     public interface OnFragmentInteractionListener {
     }
 
+    /**
+     * Pulls all locations from the locations table, adds them to a list to be displayed on the map.
+     */
     private class database extends AsyncTask<ArrayList<MarkerOptions>, ArrayList<MarkerOptions>, ArrayList<MarkerOptions>> {
         @Override
         protected ArrayList<MarkerOptions> doInBackground(ArrayList<MarkerOptions>... params) {
@@ -370,11 +397,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             return markers;
         }
 
-
         @Override
         protected void onPreExecute() {
         }
 
+        /**
+         * @param params
+         */
         @Override
         protected void onPostExecute(ArrayList<MarkerOptions> params) {
         }

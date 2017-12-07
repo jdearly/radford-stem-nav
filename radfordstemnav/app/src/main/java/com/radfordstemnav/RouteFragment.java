@@ -74,7 +74,6 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private static final String ARG_PARAM1 = "selection";
-    // Dialog creation to allow the user to select the map type
     private static final CharSequence[] MAP_TYPE_ITEMS =
             {"Road Map", "Hybrid", "Satellite", "Terrain"};
     GoogleApiClient mGoogleApiClient;
@@ -90,14 +89,10 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         // Required empty public constructor
     }
 
-    public static RouteFragment newInstance(String param1) {
-        RouteFragment fragment = new RouteFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
+    /**
+     * @param context
+     */
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof HomeFragment.OnFragmentInteractionListener) {
@@ -108,6 +103,9 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
+    /**
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,6 +117,12 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
+    /**
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return the generated view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -129,6 +133,9 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         return view;
     }
 
+    /**
+     * Generates a dialog for the user to select a particular map type
+     */
     private void showMapTypeSelectorDialog() {
         // Prepare the dialog by setting up a Builder.
         final String fDialogTitle = "Select Map Type";
@@ -162,13 +169,14 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
                     }
                 }
         );
-        // Build the dialog and show it.
         AlertDialog fMapTypeDialog = builder.create();
         fMapTypeDialog.setCanceledOnTouchOutside(true);
         fMapTypeDialog.show();
     }
 
-    // Checks to verify that the user has a network connecton to make the request for the route
+    /**
+     * @return true if the user's device is connected to a network
+     */
     public boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager)
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -176,6 +184,9 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
+    /**
+     * @param googleMap
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -207,6 +218,10 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
+    /**
+     * @param current
+     * Starts call to generate the URL
+     */
     public void generateRoute(LatLng current) {
 
         String id = mParam1;
@@ -217,28 +232,31 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         FetchUrl.execute(url);
     }
 
+    /**
+     * @param origin
+     * @param dest
+     * @return the URL for the request to Google Directions
+     */
     private String getUrl(LatLng origin, LatLng dest) {
 
-        // Origin of route
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
-
-        // Destination of route
         String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
-
         String str_mode = "mode=walking";
-
-        // Building the parameters to the web service
         String parameters = str_origin + "&" + str_dest + "&" + "&" + str_mode;
-
-        // Output format
         String output = "json";
 
-        // Building the url to Google Directions web service
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
+        // Building the url to Google Directions web service using our own API key
+        // Google "free" usage is 2,500 requests per day
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters
+                    + "&key=AIzaSyDb0s56tBr6Wf37fTGJsL71vpjIz2mtpY8";
         return url;
     }
 
-    // Download JSON data from the URL
+    /**
+     * @param strUrl
+     * @return the data from the URL
+     * @throws IOException
+     */
     private String downloadUrl(String strUrl) throws IOException {
         String data = "";
         InputStream iStream = null;
@@ -246,20 +264,13 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         try {
             URL url = new URL(strUrl);
 
-            // Creating an http connection to communicate with url
             urlConnection = (HttpURLConnection) url.openConnection();
-
-            // Connecting to url
             urlConnection.connect();
-
-            // Reading data from url
             iStream = urlConnection.getInputStream();
-
             BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
-
             StringBuffer sb = new StringBuffer();
-
             String line = "";
+
             while ((line = br.readLine()) != null) {
                 sb.append(line);
             }
@@ -286,6 +297,9 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         mGoogleApiClient.connect();
     }
 
+    /**
+     * @param bundle
+     */
     @Override
     public void onConnected(Bundle bundle) {
 
@@ -301,11 +315,19 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
+    /**
+     * Unused
+     * @param i
+     */
     @Override
     public void onConnectionSuspended(int i) {
 
     }
 
+    /**
+     * Tracks user location and updates @param mLastLocation
+     * @param location
+     */
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
@@ -337,11 +359,17 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
+    /**
+     * @param connectionResult
+     */
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         // TODO
     }
 
+    /**
+     * Checks and prompts for user permission
+     */
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -376,6 +404,11 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
+    /**
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -412,13 +445,15 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
     // Fetches data from url passed
     private class FetchUrl extends AsyncTask<String, Void, String> {
 
+        /**
+         * @param url
+         * @return data from Google Directions
+         */
         @Override
         protected String doInBackground(String... url) {
 
-            // For storing data from web service
             String data = "";
             try {
-                // Fetching the data from web service
                 data = downloadUrl(url[0]);
                 Log.d("Background Task data", data.toString());
             } catch (Exception e) {
@@ -431,15 +466,20 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             ParserTask parserTask = new ParserTask();
-            // Invokes the thread for parsing the JSON data
+            // Starts the thread for parsing the JSON
             parserTask.execute(result);
         }
     }
 
-    // Parse the Google Places in JSON format
+    /**
+     * Parsing the JSON
+     */
     private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
 
-        // Parsing the data in non-ui thread
+        /**
+         * @param jsonData
+         * @return returns the route from the parse
+         */
         @Override
         protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
 
@@ -452,7 +492,7 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
                 DataParser parser = new DataParser();
                 Log.d("ParserTask", parser.toString());
 
-                // Starts parsing data
+                // Call to DataParser class
                 routes = parser.parse(jObject);
                 Log.d("ParserTask", "Executing routes");
                 Log.d("ParserTask", routes.toString());
@@ -464,22 +504,20 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
             return routes;
         }
 
-        // Executes in UI thread, after the parsing process
+        /**
+         * @param result
+         */
         @Override
         protected void onPostExecute(List<List<HashMap<String, String>>> result) {
             ArrayList<LatLng> points;
             PolylineOptions lineOptions = null;
 
-
-            // Traversing through all the routes
             for (int i = 0; i < result.size(); i++) {
                 points = new ArrayList<>();
                 lineOptions = new PolylineOptions();
 
-                // Fetching i-th route
                 List<HashMap<String, String>> path = result.get(i);
 
-                // Fetching all the points in i-th route
                 for (int j = 0; j < path.size(); j++) {
                     HashMap<String, String> point = path.get(j);
 
@@ -490,16 +528,15 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
                     points.add(position);
                 }
 
-                // Adding all the points in the route to LineOptions
+                // Adding all the points in the route
                 lineOptions.addAll(points);
                 lineOptions.width(10);
                 lineOptions.color(Color.BLUE);
 
                 Log.d("onPostExecute", "onPostExecute lineoptions decoded");
-
             }
 
-            // Drawing polyline in the Google Map for the i-th route
+            // Drawing the polyline on the map
             if (lineOptions != null) {
                 mMap.addPolyline(lineOptions);
             } else {
@@ -508,7 +545,15 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
+    /**
+     *
+     */
     private class database extends AsyncTask<LatLng, LatLng, LatLng> {
+        /**
+         * @param params
+         * @return the destination information.
+         * Adds selection to recents
+         */
         @Override
         protected LatLng doInBackground(LatLng... params) {
 
@@ -522,7 +567,6 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
             LocationsDO destination = new LocationsDO();
             RecentsFavoritesDO recentLocation = new RecentsFavoritesDO();
             destination.setCategory("test");
-            //destination.setCategory("events");
             destination.setName(mParam1);
 
             recentLocation.setCategory("recents");
@@ -532,10 +576,7 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
 
             DynamoDBQueryExpression<LocationsDO> queryExpr = new DynamoDBQueryExpression<LocationsDO>()
                     .withHashKeyValues(destination);
-            DynamoDBQueryExpression<RecentsFavoritesDO> recentQueryExpr = new DynamoDBQueryExpression<RecentsFavoritesDO>()
-                    .withHashKeyValues(recentLocation);
             PaginatedQueryList<LocationsDO> latlng = mapper.query(LocationsDO.class, queryExpr);
-            PaginatedQueryList<RecentsFavoritesDO> recentLoc = mapper.query(RecentsFavoritesDO.class, recentQueryExpr);
 
             for (int i = 0; i < latlng.size(); i++) {
                 if (latlng.get(i).getName().equals(mParam1)) {
@@ -548,7 +589,9 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
                     recentLocation.setLatitude(lat);
                     recentLocation.setLongitude(lng);
                     recentLocation.setName(mParam1);
-                    // TTL of one week, then the item is removed from the database
+
+                    // TTL (time-to-live) of one week, then the item is removed from the database
+                    // to easily manage unnecessary storage.
                     recentLocation.setTTL((int) (System.currentTimeMillis() / 1000L) + 604800);
                     mapper.save(recentLocation);
 
@@ -561,6 +604,9 @@ public class RouteFragment extends Fragment implements OnMapReadyCallback,
         protected void onPreExecute() {
         }
 
+        /**
+         * @param params
+         */
         @Override
         protected void onPostExecute(LatLng params) {
         }

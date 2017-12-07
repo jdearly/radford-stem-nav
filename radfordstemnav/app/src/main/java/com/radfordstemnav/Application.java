@@ -30,14 +30,7 @@ public class Application extends MultiDexApplication {
     private static final String LOG_TAG = Application.class.getSimpleName();
     public static AWSConfiguration awsConfiguration;
     public static PinpointManager pinpointManager;
-    /**
-     * To change the logo and background color, use the following API
-     * <p>
-     * AuthUIConfiguration sAuthUIConfiguration =
-     * new AuthUIConfiguration.Builder()
-     * .logoResId(R.drawable.image);
-     * .backgroundColor(Color.BLACK);
-     */
+
     public static AuthUIConfiguration sAuthUIConfiguration =
             new AuthUIConfiguration.Builder()
                     .userPools(true)
@@ -46,10 +39,16 @@ public class Application extends MultiDexApplication {
     private static Context mContext;
     private AbstractApplicationLifeCycleHelper applicationLifeCycleHelper;
 
+    /**
+     * @return
+     */
     public static Context getContext() {
         return mContext;
     }
 
+    /**
+     * @param mContext
+     */
     public static void setContext(Context mContext) {
         Application.mContext = mContext;
     }
@@ -63,6 +62,7 @@ public class Application extends MultiDexApplication {
         Log.d(LOG_TAG, "Application.onCreate - Application initialized OK");
     }
 
+
     private void initializeApplication() {
         awsConfiguration = new AWSConfiguration(this);
 
@@ -71,10 +71,10 @@ public class Application extends MultiDexApplication {
             IdentityManager.setDefaultIdentityManager(identityManager);
         }
 
-
         FacebookSignInProvider.setPermissions("public_profile");
 
         // Add Facebook as an SignIn Provider.
+        // 11.17.17 - working on adding Facebook dev key to allow FB signin
         IdentityManager.getDefaultIdentityManager().addSignInProvider(FacebookSignInProvider.class);
 
         // Add UserPools as an SignIn Provider.
@@ -111,6 +111,9 @@ public class Application extends MultiDexApplication {
         };
     }
 
+    /**
+     * @param level
+     */
     @Override
     public void onTrimMemory(final int level) {
         Log.d(LOG_TAG, "onTrimMemory " + level);

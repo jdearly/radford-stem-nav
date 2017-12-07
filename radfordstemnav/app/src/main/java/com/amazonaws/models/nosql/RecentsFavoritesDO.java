@@ -9,6 +9,9 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
 @DynamoDBTable(tableName = "radfordstemnav-mobilehub-1857620739-recents-favorites")
 
+/**
+ * This provides the model to interact with the recents/favorites DynamoDB table.
+ * */
 public class RecentsFavoritesDO {
     private String _userId;
     private String _name;
